@@ -17,7 +17,7 @@ beyond file and directory names.
 Usage
 -----
 
-The Fensterbrief tool is command line based:
+The Fensterbrief tool is command line based: ::
 
     $ fensterbrief --help
     usage: fensterbrief [-h] [--config CONFIG] [--list-templates] [--list-letters]
@@ -41,7 +41,8 @@ The Fensterbrief tool is command line based:
 List all archived letters:
 ------------
 
-
+::
+  
     $ fensterbrief --list-letters --show-path
     + Looking up letters in /home/martin/Documents/Vorgaenge/
     [...]
