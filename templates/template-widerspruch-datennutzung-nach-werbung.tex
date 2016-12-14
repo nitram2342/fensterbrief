@@ -1,0 +1,54 @@
+\documentclass[briefvorlage,
+   parskip=half,%%           Abstand zwischen Absaetzen
+   fromfax=on,%%             Faxnummer!
+   fromemail=on,%%           Emailadresse!
+   locfield=wide,%%          zusaetzliches Feld fuer Absender!
+   draft=false%%             Entwurfsmodus!
+]{scrlttr2}
+
+\usepackage{advdate}
+% Bei Briefen in das Ausland
+%\setkomavar{fromcountry}{Germany}
+
+
+% Falls eine Unterschrift genutzt werden soll
+%\setkomavar{signature}{\\[-3\baselineskip]
+%\includegraphics[scale=.5]{../subscription.pdf}\\
+%Martin Schobert}
+
+\begin{document}
+ \begin{letter}{
+Company\\
+Street X\\
+XXXXX Berlin}
+
+\setkomavar{subject}{Auskunft und Widerruf der Genehmigung zur Speicherung und Nutzung meiner Daten für werbliche Zwecke}
+
+%\setkomavar{customer}[\normalfont Mieternummer]{}
+%\setkomavar{yourref}[\normalfont Ihr Zeichen] {Foo}
+\setkomavar{myref}[\normalfont Mein Zeichen]{2342}
+\setkomavar{date}[\normalfont Datum]{\today}
+\opening{Sehr geehrte Damen und Herren,}
+
+Sie haben mir unverlangt Werbung zugeschickt. Dies möchte ich zum Anlass nehmen, die Nutzung von Daten mit Ihnen zu regeln.
+
+Ich fordere Sie auf, mir folgende Auskünfte zu erteilen:
+
+\begin{itemize}
+\item Über welche gespeicherten Daten zu meiner Person verfügen Sie und woher haben Sie diese Daten?
+
+\item An welche Empfänger oder sonstige Stellen werden diese Daten weitergegeben?
+
+\item Zu welchem Zweck erfolgt diese Speicherung?
+
+\end{itemize}
+
+Ich widerspreche der Nutzung und Übermittlung meiner Daten für Zwecke der Werbung oder der Markt- oder Meinungsforschung. Sie sind daher verpflichtet, die Daten unverzüglich für diese Zwecke zu sperren. Ich bitte Sie um eine schriftliche Bestätigung der Sperrung.
+
+Ich setze Ihnen zur Erfüllung meiner Forderungen eine Frist bis zum \DayAfter[21]. Sollten Sie dieses Schreiben ignorieren, werde ich mich an den zuständigen Landesdatenschutzbeauftragten wenden.
+
+\closing{Mit freundlichen Grüßen}
+\end{letter}
+
+ 
+\end{document}

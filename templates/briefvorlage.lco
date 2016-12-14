@@ -1,0 +1,258 @@
+\ProvidesFile{sections.lco}%
+             [2008/12/03 v0.2 unsupported LCO-file]%
+
+\RequirePackage{geometry}
+\geometry{top=47mm,right=20mm,bottom=27mm,left=20mm}
+
+
+\KOMAoptions{enlargefirstpage=on}
+\KOMAoptions{parskip=half}
+\KOMAoptions{fromfax=on}
+\KOMAoptions{fromemail=on}
+\KOMAoptions{locfield=wide}
+\KOMAoptions{draft=false}
+ 
+
+% Add section commands
+
+\newcounter{section}
+\newcounter{subsection}[section]
+\newcounter{subsubsection}[subsection]
+\newcounter{paragraph}[subsubsection]
+\renewcommand*{\thesection}{\Alph{section}.}
+\renewcommand*{\thesubsection}{\Roman{subsection}.}
+\renewcommand*{\thesubsubsection}{\arabic{subsubsection}.}
+\renewcommand*{\theparagraph}{\alph{paragraph})}
+\renewcommand*{\p@subsection}{\thesection}
+\renewcommand*{\p@subsubsection}{\p@subsection\thesubsection}
+\renewcommand*{\p@paragraph}{\p@subsubsection\thesubsubsection}
+\newcommand*\addsec{\secdef\@addsec\@saddsec}
+\newcommand*{\@addsec}{}
+\def\@addsec[#1]#2{\section*{#2}\addcontentsline{toc}{section}{#1}
+  \if@twoside \@mkboth{#1}{}\else \@mkboth{#1}{#1}\fi}
+\newcommand*{\@saddsec}[1]{\section*{#1}\@mkboth{}{}}
+\let\size@section\normalsize
+\let\size@subsection\normalsize
+\let\size@subsubsection\normalsize
+\let\size@paragraph\normalsize
+\newcommand*{\scr@fnt@section}{\size@section}
+\newcommand*{\scr@fnt@subsection}{\size@subsection}
+\newcommand*{\scr@fnt@subsubsection}{\size@subsubsection}
+\newcommand*{\scr@fnt@paragraph}{\size@paragraph}
+\newkomafont{minisec}{}
+\newcommand*\sectfont{\normalcolor\bfseries}
+\newcommand*{\scr@fnt@disposition}{\sectfont}
+\aliaskomafont{sectioning}{disposition}
+\setcounter{secnumdepth}{4}
+\newcommand\section{\@startsection{section}{1}{\z@}%
+  {-1.5ex \@plus -1ex \@minus -.2ex}%
+  {0.5ex \@plus.2ex}%
+  {\setlength{\parfillskip}{\z@ \@plus 1fil}%
+    \raggedsection\normalfont\usekomafont{disposition}\nobreak
+    \usekomafont{section}\nobreak}}
+\newcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-1.5ex\@plus -1ex \@minus -.2ex}%
+  {0.5ex \@plus .2ex}%
+  {\setlength{\parfillskip}{\z@ \@plus 1fil}%
+    \raggedsection\normalfont\usekomafont{disposition}\nobreak
+    \usekomafont{subsection}\nobreak}}
+\newcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-1.5ex\@plus -1ex \@minus -.2ex}%
+  {0.5ex \@plus .2ex}%
+  {\setlength{\parfillskip}{\z@ \@plus 1fil}%
+    \raggedsection\normalfont\usekomafont{disposition}\nobreak
+    \usekomafont{subsubsection}\nobreak}}
+\newcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\setlength{\parfillskip}{\z@ \@plus 1fil}%
+    \raggedsection\normalfont\usekomafont{disposition}\nobreak
+    \usekomafont{paragraph}\nobreak}}
+\newcommand\minisec[1]{\@afterindentfalse \vskip 1.5ex
+  {\parindent \z@
+    \raggedsection\normalfont\usekomafont{disposition}\nobreak%
+    \usekomafont{minisec}#1\par\nobreak}\nobreak
+  \@afterheading}
+\let\raggedsection\raggedright
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\usepackage{marvosym}
+\usepackage[ngerman]{babel}
+\usepackage{color}
+\usepackage{graphicx}
+%\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+
+%\usepackage[sc,osf]{mathpazo}
+\usepackage{ifpdf}
+\ifpdf \usepackage[pdftex]{hyperref}
+\else  \usepackage[dvips,dviwindo,hypertex]{hyperref} \fi
+\linespread{1.15}
+
+
+\definecolor{linkcolor}{rgb}{0,0,0}
+\hypersetup{
+        colorlinks=true,
+        breaklinks=true,
+        linkcolor=linkcolor,
+        menucolor=linkcolor,
+        citecolor=linkcolor,
+        filecolor=linkcolor,
+        urlcolor=linkcolor,
+        frenchlinks=false
+}
+% Werte: DIN, DINmtext, SN, SNleft, KOMAold.
+\LoadLetterOption{DINmtext}  
+\newcommand{\emaillink}[1]{\href{mailto:#1}{#1}}
+\newkomavar{fromstreet}
+\newkomavar{fromstreetshort}
+\newkomavar{fromdistrict}
+\newkomavar{fromnameshort}
+\newkomavar{fromcountry}
+
+% Konfiguration:
+\setkomavar{fromname}{Erika Mustermann}
+\setkomavar{fromnameshort}{E. Mustermann}
+\setkomavar{fromstreet}{Milchstraße 42}
+\setkomavar{fromstreetshort}{Milchstr. 42}
+\setkomavar{fromdistrict}{42523 Somewhere}
+\setkomavar{fromcountry}{}
+\setkomavar{fromphone}{+49 30 XXXX XXXX}
+\setkomavar{fromfax}{+49 30 XXXX XXXX}
+\setkomavar{fromemail}{\emaillink{test@example.com}}
+\setkomavar{signature}{\usekomavar{fromname}}
+
+\newkomavar{backaddresssize}
+\setkomavar{backaddresssize}{\small}
+
+\setkomavar{backaddressseparator}{ \textperiodcentered\  }
+\setkomavar{fromaddress}{\usekomavar{fromstreet}\usekomavar[\\]{fromdistrict}}
+\setkomavar{backaddress}{\usekomavar{backaddresssize}{
+	\usekomavar{fromnameshort}\usekomavar{backaddressseparator}
+	\usekomavar{fromstreetshort}\usekomavar{backaddressseparator} 
+	\usekomavar{fromdistrict}
+	\ifkomavarempty{fromcountry}{}{
+		\usekomavar{backaddressseparator}\usekomavar{fromcountry}} }}
+
+
+\makeatletter
+
+\@setplength{foldmarkhpos}{8mm} %falzmarken verlaengern
+\@addtoplength{toaddrhpos}{0cm} % addressfenster nach rechts
+
+\@setplength{sigbeforevskip}{3em} % Abstand zw. Grußzeile und Name
+
+\makeatother
+
+%\setkomavar{fromlogo}{\includegraphics[height=40pt]{wapgrey}}
+\setkomavar{location}{
+\raggedleft
+\begin{tabular}[t]{@{}rr@{}}
+\Letter	  & \usekomavar{fromname} \\
+	  & \usekomavar{fromstreet} \\
+  	  & \usekomavar{fromdistrict} \\ 
+	  & \\
+\Telefon  & \usekomavar{fromphone} \\
+\Fax 	  & \usekomavar{fromfax} \\
+\MVAt 	  & \usekomavar{fromemail} 
+\end{tabular}
+}
+
+\setkomavar{firsthead}{
+%	\hfill\usekomavar{fromlogo}
+}
+
+%\setlength{\oddsidemargin}{\useplength{toaddrhpos}}
+%\addtolength{\oddsidemargin}{-1in}%
+%\setlength{\textwidth}{16cm}
+
+
+%\@setplength
+
+% Zuletzt Standard
+%\usepackage{charter}
+
+%\usepackage{caladea}
+\usepackage[T1]{fontenc}
+
+
+%\usepackage[lf]{Baskervaldx} % lining figures
+\usepackage{baskervald} % lining figures
+
+%\usepackage{librecaslon}
+
+\usepackage[bigdelims,vvarbb]{newtxmath} % math italic letters from Nimbus Roman
+\usepackage[cal=boondoxo]{mathalfa} % mathcal from STIX, unslanted a bit
+\renewcommand*\oldstylenums[1]{\textosf{#1}}
+
+%\usepackage{baskervald}
+%\usepackage[T1]{fontenc}
+
+
+% WITH SERIFS
+
+
+
+%\usepackage{caladea}
+%\usepackage[T1]{fontenc}
+
+
+%\usepackage{libertine}
+%\renewcommand*\familydefault{\sfdefault}  %% Only if the base font of the document is to be sans serif
+
+%\usepackage[sc]{mathpazo}
+
+
+
+
+%\usepackage[math]{iwona}
+
+%\usepackage[math]{kurier}
+
+%\usepackage[default]{sourcesanspro}
+
+
+%\usepackage{pxfonts}
+%\usepackage{txfonts}
+
+%\usepackage[urw-garamond]{mathdesign}
+%\usepackage{garamondx}
+
+
+%\usepackage[sfdefault,condensed]{cabin}
+%\usepackage[T1]{fontenc}
+
+
+%\usepackage[bitstream-charter]{mathdesign}
+%\usepackage[T1]{fontenc}
+
+
+%\usepackage{lmodern}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+%\usepackage[T1]{fontenc}
+
+
+%\usepackage{ebgaramond}
+%\usepackage[T1]{fontenc}
+
+% at the beginning, or somewhere in the middle of your document
+%\usepackage[T1]{fontenc}
+%\usepackage{mathgifg}
+
+%\usepackage{classico}
+
+
+% Change of font of the back-address
+\setkomafont{backaddress}{\rmfamily}
+
+\renewcommand*{\raggedsignature}{\raggedright} 
+
+
+\newcommand{\includepostage}[1]{%
+  \AddToShipoutPictureBG*{%
+    \put(\LenToUnit{68mm},\LenToUnit{-42mm}){%
+      \includegraphics[trim=57mm 228mm 114mm 55mm,clip]{#1}}}}
+
+\endinput
