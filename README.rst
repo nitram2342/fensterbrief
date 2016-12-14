@@ -9,9 +9,12 @@ Short introduction
 ==================
 
 Fensterbrief (German for window envelope) is a helper script to manage the creation
-and archival of LaTeX-based letters. It helps you creating directories in a structured
-way and to name files in a consistent way. Fensterbrief does not process metadata
-beyond file and directory names.
+and archival of LaTeX-based letters. It helps you in managing a folders in a structured
+way and to name files in a consistent way. It helps in creating new letters based on
+old ones. It tries to make letter writing easy witout adding over-specialised functionality.
+
+Fensterbrief does not process metadata beyond file and directory names. It is not a
+LaTeX editor.
 
 
 Usage
@@ -55,7 +58,8 @@ List all archived letters:
 Search for a string in directory and filenames
 ----------------------------------------------
 
-
+::
+   
     $ fensterbrief --search companyX --show-path
     + Looking up letters in /home/martin/Documents/Vorgaenge/
     [...]
@@ -66,7 +70,7 @@ Search for a string in directory and filenames
 Create a new letter based on an old one
 ---------------------------------------
 
-Often you already started a letter conversation with a recipient and have a followup letter. You like to adopt the old LaTeX letter, because you inserted reference numbers such as you customer or tax ID or the destination address. To write a new letter, you simply copy the old LaTeX file to a new destination folder.
+Often you already started a letter conversation with a recipient and have a followup letter. You like to adopt the old LaTeX letter, because you inserted reference numbers such as you customer or tax ID or the destination address. To write a new letter, you simply copy the old LaTeX file to a new destination folder. ::
 
      $ fensterbrief --adopt /home/martin/Documents/Vorgaenge/2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex
      Recipient short name: company X
