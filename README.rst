@@ -17,25 +17,24 @@ beyond file and directory names.
 Usage
 -----
 
-The Fensterbrief tool is command line based:
+The Fensterbrief tool is command line based:::
 
-::
-   $ fensterbrief --help
-   usage: fensterbrief [-h] [--config CONFIG] [--list-templates] [--list-letters]
-                       [--search SEARCH] [--adopt ADOPT] [--show-path]
-		       [--verbose]
-
-   A command line tool to prepare letters
-
-   optional arguments:
-     -h, --help        show this help message and exit
-     --config CONFIG   The configuration file to use
-     --list-templates  List all letter templates
-     --list-letters    List all letters
-     --search SEARCH   Search for a string in filenames
-     --adopt ADOPT     Create a new letter based on a previous one
-     --show-path       Show full path for filenames
-     --verbose         Show what is going on
+    $ fensterbrief --help
+    usage: fensterbrief [-h] [--config CONFIG] [--list-templates] [--list-letters]
+                        [--search SEARCH] [--adopt ADOPT] [--show-path]
+ 		        [--verbose]
+		       
+    A command line tool to prepare letters
+    
+    optional arguments:
+      -h, --help        show this help message and exit
+      --config CONFIG   The configuration file to use
+      --list-templates  List all letter templates
+      --list-letters    List all letters
+      --search SEARCH   Search for a string in filenames
+      --adopt ADOPT     Create a new letter based on a previous one
+      --show-path       Show full path for filenames
+      --verbose         Show what is going on
 
 
 
