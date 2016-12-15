@@ -36,6 +36,7 @@ The Fensterbrief tool is command line based: ::
       --list-letters    List all letters
       --search SEARCH   Search for a string in filenames
       --adopt ADOPT     Create a new letter based on a previous one
+      --init            Initialize the environment
       --show-path       Show full path for filenames
       --verbose         Show what is going on
 
@@ -90,18 +91,34 @@ Installation
 Technical installation of the tool itself
 ------------------------------------------
 
+Clone the repository: ::
 
+    $ git clone https://github.com/nitram2342/fensterbrief.git
+
+Install the program: ::
+
+    $ cd fensterbrief/
+    $ sudo python3 setup.py install
 
 Setup the environment 
 ---------------------
 
-
+After installing the tool, the configuration file must be created. A wizzard mode asks for certain
+configuration points as shown below. ::
+   
+    $ fensterbrief --init
+    + Root directory, where letters should be stored: /home/martin/Documents/Vorgaenge/
+    + Template directory, where template letters are stored: ${ROOT_DIR}/_templates/
+    + Root directory, where letters should be stored: texmaker
+    + Writing configuration file /home/martin/.fensterbrief.conf
+    + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/briefvorlage.lco
+    + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/template-widerspruch-datennutzung-nach-werbung.tex
+		    
+It is possible to use text makros such as the ${ROOT_DIR}.
 
 Customize templates
 -------------------
 
-
-
-
-
+The wizzard copys template files to the user's template directory. These templates should be
+customized in a last step.
 
