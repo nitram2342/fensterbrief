@@ -4,6 +4,7 @@ import argparse
 import configparser
 import subprocess
 import os
+import sys
 from fensterbrief import fensterbrief
 
 def main():
@@ -18,15 +19,22 @@ def main():
     parser.add_argument('--list-letters', help='List all letters', action='store_true')
     parser.add_argument('--search', help='Search for a string in filenames')
     parser.add_argument('--adopt', help='Create a new letter based on a previous one')
+    parser.add_argument('--init', help='Initialize the environment', action='store_true')
     parser.add_argument('--show-path', help='Show full path for filenames', action='store_true')
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
       
     (options, args) = parser.parse_known_args()
 
+    if options.init:
+        fensterbrief.init(config_file)
+        return
+
+    
     # create default config file?
     if not os.path.isfile(config_file):
-        init_config_file(config_file)
-
+        print("+ Can't find config file. Please run: %s --init" % sys.argv[0])
+        return
+    
     # use a different config file?
     if options.config: 
         config_file = options.config
@@ -34,6 +42,8 @@ def main():
     # parse config
     if options.verbose:
         print("+ Reading config file %s" % options.config)
+
+
     config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
     config.read([options.config])
 
@@ -41,7 +51,7 @@ def main():
     root_dir = config.get('DEFAULT', 'ROOT_DIR')
 
     if options.list_templates:
-        fensterbrief.list_templates(template_dir)
+        fensterbrief.list_templates(template_dir, options.show_path)
 
     elif options.list_letters:
         fensterbrief.list_letters(root_dir, options.show_path)
@@ -52,7 +62,7 @@ def main():
     elif options.adopt:
         dst_file_name = fensterbrief.adopt(root_dir, options.adopt)
         subprocess.call([config.get('DEFAULT', 'EDITOR'), dst_file_name])
-        
+
     else:
         print("+ Unknown option")
         parser.print_help()
