@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--adopt', help='Create a new letter based on a previous one')
     parser.add_argument('--init', help='Initialize the environment', action='store_true')
     parser.add_argument('--show-path', help='Show full path for filenames', action='store_true')
+    parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
       
     (options, args) = parser.parse_known_args()
@@ -60,7 +61,7 @@ def main():
         fensterbrief.list_letters(root_dir, options.show_path, options.search)
 
     elif options.adopt:
-        dst_file_name = fensterbrief.adopt(root_dir, options.adopt)
+        dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder)
         subprocess.call([config.get('DEFAULT', 'EDITOR'), dst_file_name])
 
     else:

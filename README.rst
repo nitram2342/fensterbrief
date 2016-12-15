@@ -24,11 +24,11 @@ The Fensterbrief tool is command line based: ::
 
     $ fensterbrief --help
     usage: fensterbrief [-h] [--config CONFIG] [--list-templates] [--list-letters]
-                        [--search SEARCH] [--adopt ADOPT] [--show-path]
- 		        [--verbose]
-		       
+                        [--search SEARCH] [--adopt ADOPT] [--init] [--show-path]
+		        [--keep-folder] [--verbose]
+
     A command line tool to prepare letters
-    
+
     optional arguments:
       -h, --help        show this help message and exit
       --config CONFIG   The configuration file to use
@@ -38,9 +38,9 @@ The Fensterbrief tool is command line based: ::
       --adopt ADOPT     Create a new letter based on a previous one
       --init            Initialize the environment
       --show-path       Show full path for filenames
+      --keep-folder     Store the adopted letter in the same folder
       --verbose         Show what is going on
-
-
+							      
 
 List all archived letters:
 ------------
@@ -84,7 +84,12 @@ Often you already started a letter conversation with a recipient and have a foll
      + Copy file /home/martin/Documents/Vorgaenge/2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex to /home/martin/Documents/Vorgaenge/2016-12_company_X-Klarung_Situation_X/2016-12-14_company_X-Klarung_Situation_X.tex
 
 Afterwards, the Fensterbrief script will launch the LaTeX editor that has been configured.
-    
+
+If you write a follow-up letter and want to store this letter in the same directory as the original letter, just add option --keep-folder. ::
+
+     $ fensterbrief --adopt ... --keep-folder
+
+
 Installation
 ==================
 

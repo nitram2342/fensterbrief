@@ -31,25 +31,32 @@ def list_files(dir_name, show_path=False, search=None):
                     print("  + %s" % file)
     
 
-def adopt(doc_root, src_file):
+def adopt(doc_root, src_file, keep_folder=False):
     month_str = date.today().strftime("%Y-%m")
     date_str = date.today().isoformat()
 
     recipient_name = slugify(input("+ Recipient short name: "), separator="_")
-    folder_subject = slugify(input("+ Folder subject: "), separator="_")
+
+    if not keep_folder:
+        folder_subject = slugify(input("+ Folder subject: "), separator="_")
+        foldername = "%s_%s-%s" % (month_str, recipient_name, folder_subject)
+
     letter_subject = slugify(input("+ Letter subject: "), separator="_")
+    filename = "%s_%s-%s.tex" % (date_str, recipient_name, letter_subject)
     
     
-    print("+ Folder subject: %s" % folder_subject)
+    if not keep_folder:
+        print("+ Folder subject: %s" % folder_subject)
     print("+ Letter subject: %s" % letter_subject)
     print("+ Recipient: %s" % recipient_name)
 
-    foldername = "%s_%s-%s" % (month_str, recipient_name, folder_subject)
-    filename = "%s_%s-%s.tex" % (date_str, recipient_name, letter_subject)
-
     
     # create directory
-    dst_folder_path = os.path.join(doc_root, foldername)
+    if not keep_folder:
+        dst_folder_path = os.path.join(doc_root, foldername)
+    else:
+        dst_folder_path = os.path.dirname(src_file)
+        
     if not os.path.exists(dst_folder_path):
         print("+ Creating folder %s" % dst_folder_path)
         os.mkdir(dst_folder_path)
