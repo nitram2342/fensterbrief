@@ -6,15 +6,15 @@
    draft=false%%             Entwurfsmodus!
 ]{scrlttr2}
 
-\usepackage{advdate}
+\usepackage{advdate} % fuer die Fristberechnung
 % Bei Briefen in das Ausland
 %\setkomavar{fromcountry}{Germany}
 
 
 % Falls eine Unterschrift genutzt werden soll
 %\setkomavar{signature}{\\[-3\baselineskip]
-%\includegraphics[scale=.5]{../subscription.pdf}\\
-%Martin Schobert}
+%\includegraphics[scale=.5]{../signature.pdf}\\
+%Foo Bar}
 
 \begin{document}
  \begin{letter}{
@@ -24,7 +24,7 @@ XXXXX Berlin}
 
 \setkomavar{subject}{Auskunft und Widerruf der Genehmigung zur Speicherung und Nutzung meiner Daten für werbliche Zwecke}
 
-%\setkomavar{customer}[\normalfont Mieternummer]{}
+%\setkomavar{customer}[\normalfont Kundennummer]{}
 %\setkomavar{yourref}[\normalfont Ihr Zeichen] {Foo}
 \setkomavar{myref}[\normalfont Mein Zeichen]{2342}
 \setkomavar{date}[\normalfont Datum]{\today}

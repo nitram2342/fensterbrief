@@ -1,0 +1,41 @@
+\documentclass[briefvorlage,
+   parskip=half,%%           Abstand zwischen Absaetzen
+   fromfax=on,%%             Faxnummer!
+   fromemail=on,%%           Emailadresse!
+   locfield=wide,%%          zusaetzliches Feld fuer Absender!
+   draft=false%%             Entwurfsmodus!
+]{scrlttr2}
+
+% Bei Briefen in das Ausland
+%\setkomavar{fromcountry}{Germany}
+
+
+% Falls eine Unterschrift genutzt werden soll
+%\setkomavar{signature}{\\[-3\baselineskip]
+%\includegraphics[scale=.5]{../subscription.pdf}\\
+%Martin Schobert}
+
+\begin{document}
+ \begin{letter}{
+Company\\
+Street X\\
+XXXXX Berlin}
+
+\setkomavar{subject}{Lorem ipsum}
+
+%\setkomavar{customer}[\normalfont Kundennummer]{}
+%\setkomavar{yourref}[\normalfont Ihr Zeichen] {Foo}
+\setkomavar{myref}[\normalfont Mein Zeichen]{2342}
+\setkomavar{date}[\normalfont Datum]{\today}
+\opening{Sehr geehrte Damen und Herren,}
+
+...
+
+\encl{Anhang A \\
+Anhang B}
+
+\closing{Mit freundlichen Grüßen}
+\end{letter}
+
+ 
+\end{document}
