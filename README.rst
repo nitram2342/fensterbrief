@@ -24,7 +24,7 @@ The Fensterbrief tool is command line based: ::
 
     $ fensterbrief --help
     usage: fensterbrief [-h] [--config CONFIG] [--list-templates] [--list-letters]
-                        [--search SEARCH] [--adopt ADOPT] [--init] [--show-path]
+                        [--search SEARCH] [--adopt ADOPT] [--init]
 		        [--keep-folder] [--verbose]
 
     A command line tool to prepare letters
@@ -37,7 +37,6 @@ The Fensterbrief tool is command line based: ::
       --search SEARCH   Search for a string in filenames
       --adopt ADOPT     Create a new letter based on a previous one
       --init            Initialize the environment
-      --show-path       Show full path for filenames
       --keep-folder     Store the adopted letter in the same folder
       --verbose         Show what is going on
 							      
@@ -47,12 +46,12 @@ List all archived letters:
 
 ::
   
-    $ fensterbrief --list-letters --show-path
+    $ fensterbrief --list-letters
     + Looking up letters in /home/martin/Documents/Vorgaenge/
     [...]
-    + /home/martin/Documents/Vorgaenge/2010-09-company_X-anmeldung/2010-09-28_anmeldung.tex
-    + /home/martin/Documents/Vorgaenge/2010-09-company_X-anmeldung/2011-05-04-vertragsunterlagen.tex
-    + /home/martin/Documents/Vorgaenge/2014-09-company_Y-guthabenerstattung/2014-09-29-companyY-guthabenerstattung.tex
+    + 2010-09-company_X-anmeldung/2010-09-28_anmeldung.tex
+    + 2010-09-company_X-anmeldung/2011-05-04-vertragsunterlagen.tex
+    + 2014-09-company_Y-guthabenerstattung/2014-09-29-companyY-guthabenerstattung.tex
     [...]
     
 
@@ -61,11 +60,11 @@ Search for a string in directory and filenames
 
 ::
    
-    $ fensterbrief --search companyX --show-path
+    $ fensterbrief --search companyX
     + Looking up letters in /home/martin/Documents/Vorgaenge/
     [...]
-    + /home/martin/Documents/Vorgaenge/2010-09-company_X-anmeldung/2010-09-28_anmeldung.tex
-    + /home/martin/Documents/Vorgaenge/2010-09-company_X-anmeldung/2011-05-04-vertragsunterlagen.tex
+    + 2010-09-company_X-anmeldung/2010-09-28_anmeldung.tex
+    + 2010-09-company_X-anmeldung/2011-05-04-vertragsunterlagen.tex
     [...]
 
 Create a new letter based on an old one

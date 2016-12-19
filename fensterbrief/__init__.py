@@ -20,7 +20,6 @@ def main():
     parser.add_argument('--search', help='Search for a string in filenames')
     parser.add_argument('--adopt', help='Create a new letter based on a previous one')
     parser.add_argument('--init', help='Initialize the environment', action='store_true')
-    parser.add_argument('--show-path', help='Show full path for filenames', action='store_true')
     parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
       
@@ -52,13 +51,13 @@ def main():
     root_dir = config.get('DEFAULT', 'ROOT_DIR')
 
     if options.list_templates:
-        fensterbrief.list_templates(template_dir, options.show_path)
+        fensterbrief.list_templates(template_dir)
 
     elif options.list_letters:
-        fensterbrief.list_letters(root_dir, options.show_path)
+        fensterbrief.list_letters(root_dir)
 
     elif options.search:
-        fensterbrief.list_letters(root_dir, options.show_path, options.search)
+        fensterbrief.list_letters(root_dir, options.search)
 
     elif options.adopt:
         dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder)

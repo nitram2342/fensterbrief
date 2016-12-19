@@ -12,23 +12,45 @@ import shutil
 
 from pkg_resources import resource_stream, resource_listdir
 
+working_object_file = '.working_object.conf'
 
-def list_templates(dir_name, show_path=False):
+def list_templates(dir_name):
     print("+ Looking up templates in %s" % dir_name)
-    list_files(dir_name, show_path)
+    list_files(dir_name)
                 
-def list_letters(dir_name, show_path=False, search=None):
+def list_letters(dir_name, search=None):
     print("+ Looking up letters in %s" % dir_name)
-    list_files(dir_name, show_path, search)
+    list_files(dir_name, search)
 
-def list_files(dir_name, show_path=False, search=None):
+def list_files(dir_name, search=None):
     for (dirpath, dirnames, filenames) in os.walk(dir_name):
         for file in sorted(filenames):
             if file.endswith(".tex") and (search == None or search.lower() in file.lower()):
-                if show_path:
-                    print("  + %s" % os.path.join(dirpath, file))
-                else:
-                    print("  + %s" % file)
+                print("  + %s" % os.path.relpath(os.path.join(dirpath, file), dir_name))
+    
+
+def write_working_ref(doc_root, working_dir, working_file):
+    """ Write information about the working directory into a file """
+    
+    # create a config file
+    config = configparser.RawConfigParser()
+
+    config.set('DEFAULT', 'WORKING_DIR', working_dir)
+    config.set('DEFAULT', 'WORKING_FILE', working_file)
+
+    file = os.path.join(doc_root, working_object_file)
+    with open(file, 'w') as fh:
+        config.write(fh)
+        os.chmod(file, 0o600)
+
+
+def load_working_ref(doc_root):
+    config = configparser.ConfigParser()
+    file = os.path.join(doc_root, working_object_file)
+
+    config.read(file)
+    return config.get('DEFAULT', 'WORKING_DIR')
+
     
 
 def adopt(doc_root, src_file, keep_folder=False):
@@ -42,7 +64,7 @@ def adopt(doc_root, src_file, keep_folder=False):
         foldername = "%s_%s-%s" % (month_str, recipient_name, folder_subject)
 
     letter_subject = slugify(input("+ Letter subject: "), separator="_")
-    filename = "%s_%s-%s.tex" % (date_str, recipient_name, letter_subject)
+    new_filename = "%s_%s-%s.tex" % (date_str, recipient_name, letter_subject)
     
     
     if not keep_folder:
@@ -50,6 +72,10 @@ def adopt(doc_root, src_file, keep_folder=False):
     print("+ Letter subject: %s" % letter_subject)
     print("+ Recipient: %s" % recipient_name)
 
+
+    # check source file name
+    if not src_file.startswith("/"):
+        src_file = os.path.join(doc_root, src_file)
     
     # create directory
     if not keep_folder:
@@ -64,9 +90,13 @@ def adopt(doc_root, src_file, keep_folder=False):
         print("+ Folder %s already exists. Skipping creation." % dst_folder_path)
     
     # copy file
-    dst_file_path = os.path.join(dst_folder_path, filename)
+    dst_file_path = os.path.join(dst_folder_path, new_filename)
     print("+ Copy file %s to %s" % (src_file, dst_file_path))
     shutil.copyfile(src_file,  dst_file_path)
+
+
+    # store referene to working dir
+    write_working_ref(doc_root, dst_folder_path, new_filename)
     
     return dst_file_path
 
@@ -120,9 +150,9 @@ def init_config_file(config_file):
     # create a config file
     config = configparser.RawConfigParser()
 
-    root_dir = input("+ Root directory, where letters should be stored: ")
+    root_dir =     input("+ Root directory, where letters should be stored       : ")
     template_dir = input("+ Template directory, where template letters are stored: ")
-    editor = input("+ Root directory, where letters should be stored: ")
+    editor =       input("+ Root directory, where letters should be stored       : ")
 
     config.set('DEFAULT', 'ROOT_DIR', root_dir)
     config.set('DEFAULT', 'TEMPLATE_DIR', template_dir)
