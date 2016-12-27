@@ -23,22 +23,28 @@ Usage
 The Fensterbrief tool is command line based: ::
 
     $ fensterbrief --help
-    usage: fensterbrief [-h] [--config CONFIG] [--list-templates] [--list-letters]
-                        [--search SEARCH] [--adopt ADOPT] [--init]
-		        [--keep-folder] [--verbose]
+    usage: fensterbrief [-h] [--config FILE] [--list-templates] [--list-letters]
+                        [--search STRING] [--adopt FILE] [--init] [--keep-folder]
+		        [--verbose] [--mail-simple-fax DEST]
+			[--soap-simple-fax DEST]
 
     A command line tool to prepare letters
-
+    
     optional arguments:
-      -h, --help        show this help message and exit
-      --config CONFIG   The configuration file to use
-      --list-templates  List all letter templates
-      --list-letters    List all letters
-      --search SEARCH   Search for a string in filenames
-      --adopt ADOPT     Create a new letter based on a previous one
-      --init            Initialize the environment
-      --keep-folder     Store the adopted letter in the same folder
-      --verbose         Show what is going on
+      -h, --help            show this help message and exit
+      --config FILE         The configuration file to use
+      --list-templates      List all letter templates
+      --list-letters        List all letters
+      --search STRING       Search for a string in filenames
+      --adopt FILE          Create a new letter based on a previous one
+      --init                Initialize the environment
+      --keep-folder         Store the adopted letter in the same folder
+      --verbose             Show what is going on
+      --mail-simple-fax DEST
+                            Send a fax via simple-fax.de using the e-mail
+			    interface
+      --soap-simple-fax DEST
+                            Send a fax via simple-fax.de using the SOAP interface
 							      
 
 List all archived letters:
