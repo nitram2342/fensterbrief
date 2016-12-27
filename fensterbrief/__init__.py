@@ -6,6 +6,7 @@ import subprocess
 import os
 import sys
 from fensterbrief import fensterbrief
+from fensterbrief.transmission.simple_fax_de.mail_to_simple_fax_de import *
 
 def main():
 
@@ -14,14 +15,16 @@ def main():
 
     # process command line arguments
     parser = argparse.ArgumentParser(description='A command line tool to prepare letters') 
-    parser.add_argument('--config', help='The configuration file to use', default=config_file)
+    parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')
     parser.add_argument('--list-templates', help='List all letter templates', action='store_true')
     parser.add_argument('--list-letters', help='List all letters', action='store_true')
-    parser.add_argument('--search', help='Search for a string in filenames')
-    parser.add_argument('--adopt', help='Create a new letter based on a previous one')
+    parser.add_argument('--search', help='Search for a string in filenames', metavar='STRING')
+    parser.add_argument('--adopt', help='Create a new letter based on a previous one', metavar='FILE')
     parser.add_argument('--init', help='Initialize the environment', action='store_true')
     parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
+    parser.add_argument('--mail-simple-fax', help='Send a fax via simple-fax.de using the e-mail interface', metavar='DEST')
+    parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
       
     (options, args) = parser.parse_known_args()
 
@@ -63,6 +66,24 @@ def main():
         dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder)
         subprocess.call([config.get('DEFAULT', 'EDITOR'), dst_file_name])
 
+    elif options.mail_simple_fax or options.soap_simple_fax:
+      
+        if options.mail_simple_fax:
+            trans = mail_to_simple_fax_de(config)
+        else:
+            trans = soap_to_simple_fax_de(config)
+
+        working_ref = fensterbrief.load_working_ref(root_dir)
+        pdf_file = os.path.join(root_dir, working_ref['dir'], working_ref['pdf'])
+
+        if options.mail_simple_fax:
+            dst = options.mail_simple_fax
+        else:
+            dst = options.soap_simple_fax
+            
+        print("+ Going to send file: %s" % pdf_file)
+        trans.send(pdf_file, dst, working_ref['pdf'])
+        
     else:
         print("+ Unknown option")
         parser.print_help()

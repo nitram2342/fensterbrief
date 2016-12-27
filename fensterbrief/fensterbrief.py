@@ -9,6 +9,7 @@ import os
 from datetime import date
 from slugify import slugify
 import shutil
+import subprocess
 
 from pkg_resources import resource_stream, resource_listdir
 
@@ -29,14 +30,18 @@ def list_files(dir_name, search=None):
                 print("  + %s" % os.path.relpath(os.path.join(dirpath, file), dir_name))
     
 
-def write_working_ref(doc_root, working_dir, working_file):
+def write_working_ref(doc_root, working_dir, working_tex_file, working_pdf_file=None):
     """ Write information about the working directory into a file """
+
+    if working_pdf_file == None:
+        working_pdf_file = working_tex_file.replace(".tex", ".pdf")
     
     # create a config file
     config = configparser.RawConfigParser()
 
     config.set('DEFAULT', 'WORKING_DIR', working_dir)
-    config.set('DEFAULT', 'WORKING_FILE', working_file)
+    config.set('DEFAULT', 'WORKING_TEX_FILE', working_tex_file)
+    config.set('DEFAULT', 'WORKING_PDF_FILE', working_pdf_file)
 
     file = os.path.join(doc_root, working_object_file)
     with open(file, 'w') as fh:
@@ -49,7 +54,9 @@ def load_working_ref(doc_root):
     file = os.path.join(doc_root, working_object_file)
 
     config.read(file)
-    return config.get('DEFAULT', 'WORKING_DIR')
+    return { 'dir' : config.get('DEFAULT', 'WORKING_DIR'),
+             'tex' : config.get('DEFAULT', 'WORKING_TEX_FILE'),
+             'pdf' : config.get('DEFAULT', 'WORKING_PDF_FILE') }
 
     
 
@@ -115,6 +122,8 @@ def init_templates(config_file):
     config.read(config_file)
     template_dir = config.get('DEFAULT', 'TEMPLATE_DIR')
       
+    texmf_dir =  os.path.expanduser('~/texmf/tex/latex/fensterbrief/')
+
 
     # check if template directory exists
     if not os.path.exists(template_dir):
@@ -123,13 +132,25 @@ def init_templates(config_file):
             os.makedirs(template_dir)
         else:
             return
+
+    # create user's 'texmf' directory
+    if not os.path.exists(texmf_dir):
+        answer = input("+ Shall directory %s be created? " % temxmf_dir).lower()
+        if 'y' in answer:
+            os.makedirs(texmf_dir)
+        else:
+            return
     
     # copy templates to tempalte directory
     for res_name in resource_listdir('templates', ''):
         if res_name.endswith(".tex") or res_name.endswith(".lco"):
             src_fd = resource_stream('templates', res_name)            
-            
-            dst_file = os.path.join(template_dir, res_name)
+
+            if res_name.endswith(".tex"):
+                dst_file = os.path.join(template_dir, res_name)
+            else:
+                dst_file = os.path.join(texmf_dir, res_name)
+                
             print("+ Copy resource file to %s" % dst_file)
 
             write_file = False
@@ -143,6 +164,10 @@ def init_templates(config_file):
             if write_file:
                 with open(dst_file, 'wb') as dst_fd:                
                     shutil.copyfileobj(src_fd, dst_fd)
+
+    # update
+    subprocess.call(['texthash'])
+
                     
     
 def init_config_file(config_file):
@@ -150,16 +175,25 @@ def init_config_file(config_file):
     # create a config file
     config = configparser.RawConfigParser()
 
-    root_dir =     input("+ Root directory, where letters should be stored       : ")
-    template_dir = input("+ Template directory, where template letters are stored: ")
-    editor =       input("+ Root directory, where letters should be stored       : ")
+    root_dir =     input("+ Root directory, where letters should be stored        : ")
+    template_dir = input("+ Template directory, where template letters are stored : ")
+    editor =       input("+ Root directory, where letters should be stored        : ")
+
+    mail_from =    input("+ Your e-mail address                                   : ")
 
     config.set('DEFAULT', 'ROOT_DIR', root_dir)
     config.set('DEFAULT', 'TEMPLATE_DIR', template_dir)
     config.set('DEFAULT', 'EDITOR', editor)
+
+
+    config.set('mail_to_simple_fax_de', 'mail_client', 'thunderbird')
+    config.set('mail_to_simple_fax_de', 'mail_from', 'id1')
+
+    config.set('soap_to_simple_fax_de', 'user', mail_from)
+    config.set('soap_to_simple_fax_de', 'password', '')
     
     with open(config_file, 'w') as cf_handle:
-        print("+ Writing configuration file %s" % config_file)
+        print("+ Writing configuration file %s. You may want to edit this file later for further configuration." % config_file)
         config.write(cf_handle)
         os.chmod(config_file, 0o600)
 
