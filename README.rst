@@ -78,7 +78,7 @@ Create a new letter based on an old one
 
 Often you already started a letter conversation with a recipient and have a followup letter. You like to adopt the old LaTeX letter, because you inserted reference numbers such as you customer or tax ID or the destination address. To write a new letter, you simply copy the old LaTeX file to a new destination folder. ::
 
-     $ fensterbrief --adopt /home/martin/Documents/Vorgaenge/2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex
+     $ fensterbrief --adopt 2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex
      Recipient short name: company X
      Folder subject: Klärung Situation X
      Letter subject: Klärung Situation X
@@ -123,6 +123,7 @@ configuration points as shown below. ::
     + Writing configuration file /home/martin/.fensterbrief.conf
     + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/briefvorlage.lco
     + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/template-widerspruch-datennutzung-nach-werbung.tex
+    [...]
 		    
 It is possible to use text makros such as the ``${ROOT_DIR}``.
 
