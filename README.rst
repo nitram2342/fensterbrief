@@ -1,26 +1,26 @@
 Fensterbrief
 ============
 
-Fensterbrief is a python script to organize and work with LaTeX-based letters.
+``fensterbrief`` is a python script to organize and work with LaTeX-based letters.
 
 ----
 
 Short introduction
 ==================
 
-Fensterbrief (German for window envelope) is a helper script to manage the creation
+``fensterbrief`` (German for window envelope) is a helper script to manage the creation
 and archival of LaTeX-based letters. It helps you in managing a folders in a structured
 way and to name files in a consistent way. It helps in creating new letters based on
 old ones. It tries to make letter writing easy witout adding over-specialised functionality.
 
-Fensterbrief does not process metadata beyond file and directory names. It is not a
+``fensterbrief`` does not process metadata beyond file and directory names. It is not a
 LaTeX editor.
 
 
 Usage
 -----
 
-The Fensterbrief tool is command line based: ::
+The ``fensterbrief`` tool is command line based: ::
 
     $ fensterbrief --help
     usage: fensterbrief [-h] [--config FILE] [--list-templates] [--list-letters]
@@ -94,6 +94,23 @@ If you write a follow-up letter and want to store this letter in the same direct
 
      $ fensterbrief --adopt ... --keep-folder
 
+When a letter is created, ``fensterbrief`` keeps track of it in a file ``${ROOT_DIR}/.working_object.conf``. This file references the current letter and simplifies the process of interacting with the letter.
+
+
+Sending a letter
+----------------
+
+Usually, you will print your letter from the LaTex editor and close the editor afterwards. However, sometimes a letter should not be sent via snail mail, instead it should be sent via Fax. Because I use the prepaid service from http://simple-fax.de, ``fensterbrief`` supports this service provider.
+
+Simple-fax.de supports fax sending via a `SOAP-based web API <http://simple-fax.de/Downloads/SOAP-API-simplefax.pdf>`_. However, this interface lacks support for a transmission confirmation. The simple-fax interface will call you back on your own web interface for status tracking, but you have to setup your status handler and you will not get a fancy transmission confirmation.
+
+Therefore, I prefer the mail interface, because their e-mail interface sends status messages, a transmission confirmation PDF including the first page of your fax message, and you will have everything archived in your mail user agent. To send your letter ``fensterbrief`` will invoke your mail client. ::
+
+
+     $ fensterbrief --mail-simple-fax <faxnum>
+
+It will launch a prefilled 'new mail' dialog. Currently, only Thunderbird is supported. If you work with multiple e-mail accounts or e-mail identities, please make sure, the correct 'from' address is selected. The ``~/.fensterbrief.conf`` configuration file has a setting for this (``mail_from`` in section ``mail_to_simple_fax_de``). For some reason, an index such as ``id2`` must be specified to select the 'from' address instead of using just an ordinary e-mail address.
+
 
 Installation
 ==================
@@ -140,4 +157,23 @@ You can use your own LaTex templates. They can be based on the LaTeX g-brief, on
 * `Rendered standard letter template for defeating advertising and personal data usage <./templates/template-widerspruch-datennutzung-nach-werbung.pdf>`_
 
 When running ``--init``, ``.lco`` files are copied to the ``~/texmf/tex/latex/fensterbrief/`` directory and ``texhash`` is run afterwards.
+
+Sample configuration file
+-------------------------
+
+Example configuration file ``~/.fensterbrief.conf``: ::
+
+  [DEFAULT]
+  root_dir = /home/martin/Documents/Vorgaenge/
+  template_dir = ${ROOT_DIR}/_templates/
+  editor = texmaker
+
+  [mail_to_simple_fax_de]
+  mail_client = thunderbird
+  mail_from = id3
+
+  [soap_to_simple_fax_de]
+  user = foo@exmaple.com
+  password = secret
+  
 
