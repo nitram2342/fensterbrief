@@ -1,0 +1,55 @@
+\documentclass[%%
+   briefvorlage,
+   parskip=half,%%           Abstand zwischen Absaetzen
+   fromfax=on,%%             Faxnummer!
+   fromemail=on,%%           Emailadresse!
+   locfield=wide,%%          zusaetzliches Feld fuer Absender!
+   draft=false%%             Entwurfsmodus!
+]{scrlttr2}
+
+\begin{document}
+ \begin{letter}{
+ABC\\
+Teststr. 42 \\
+99999 Kleinkleckersdorf}
+
+\setkomavar{subject}{Rechnung}
+
+\setkomavar{customer}[\normalfont Kundennr.]{42}
+\setkomavar{myref}[\normalfont Rechnungsnr.]{2342XX}
+\setkomavar{date}[\normalfont Datum]{\today}
+\opening{Sehr geehrte Damen und Herren,}
+
+hiermit erlaube ich mir, den unten angegebenen Betrag in Rechnung zu stellen. 
+
+%\begin{tabular}{|p{8.8cm}||||r|}
+\begin{tabular}{ p{9.0cm} l l r} 
+%\hline
+\textbf{Bezeichnung} & \textbf{Tage} & \textbf{Tagessatz} & \textbf{Summe} \\
+\hline
+Gegenstand 1 & 10 &  XXX,00 EUR & XXXX,00 EUR\\ 
+Gegenstand 2 & 10 &  XXX,00 EUR & XXXX,00 EUR\\ 
+
+\hline
+\multicolumn{3}{ l}{Gesamt:} & XXXX,00 EUR  \\
+
+%\hline
+\multicolumn{3}{ l}{\textbf{Rechnungsbetrag:}} & \textbf{ XXXX,00 EUR}  \\
+%\hline
+\end{tabular}
+\bigskip
+
+Ich bitte Sie, den Rechnungsbetrag unter Angabe der Rechnungsnummer auf das nachfolgende Konto zu überweisen:
+
+Kontoinhaber: Erika  Musterman\\
+IBAN: DE4223232323232323\\
+
+
+Vielen Dank für Ihren Auftrag.
+
+
+\closing{Mit freundlichen Grüßen}
+\end{letter}
+
+ 
+\end{document}

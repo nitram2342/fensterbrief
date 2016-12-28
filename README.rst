@@ -132,3 +132,11 @@ Customize templates
 The wizzard copys template files to the user's template directory. These templates should be
 customized in a last step.
 
+You can use your own LaTex templates. They can be based on the LaTeX g-brief, on scrlttr2 or on any other letter class. The templates that are shiped in this package are based on scrlttr2. There are plenty of template examples on the Internet, which you can adjust to your needs. My templates look like this:
+
+* [Rendered standard letter template](templates/template-standard-letter.pdf)
+* [Rendered standard invoice template](templates/template-invoice.pdf)
+* [Rendered standard letter template for defeating advertising and personal data usage](templates/template-widerspruch-datennutzung-nach-werbung.pdf)
+
+When running --init, 'lco' files are copied to the ~/texmf/tex/latex/fensterbrief/ directory and 'texhash' is run afterwards.
+
