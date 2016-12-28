@@ -75,9 +75,9 @@ def adopt(doc_root, src_file, keep_folder=False):
     
     
     if not keep_folder:
-        print("+ Folder subject: %s" % folder_subject)
-    print("+ Letter subject: %s" % letter_subject)
-    print("+ Recipient: %s" % recipient_name)
+        print("+ Using this folder subject: %s" % folder_subject)
+    print("+ Using this letter subject: %s" % letter_subject)
+    print("+ Using this recipient: %s" % recipient_name)
 
 
     # check source file name
@@ -85,10 +85,10 @@ def adopt(doc_root, src_file, keep_folder=False):
         src_file = os.path.join(doc_root, src_file)
     
     # create directory
-    if not keep_folder:
-        dst_folder_path = os.path.join(doc_root, foldername)
-    else:
+    if keep_folder:
         dst_folder_path = os.path.dirname(src_file)
+    else:
+        dst_folder_path = os.path.join(doc_root, foldername)
         
     if not os.path.exists(dst_folder_path):
         print("+ Creating folder %s" % dst_folder_path)
