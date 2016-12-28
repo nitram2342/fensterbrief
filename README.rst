@@ -134,9 +134,9 @@ customized in a last step.
 
 You can use your own LaTex templates. They can be based on the LaTeX g-brief, on scrlttr2 or on any other letter class. The templates that are shiped in this package are based on scrlttr2. There are plenty of template examples on the Internet, which you can adjust to your needs. My templates look like this:
 
-* [Rendered standard letter template](templates/template-standard-letter.pdf)
-* [Rendered standard invoice template](templates/template-invoice.pdf)
-* [Rendered standard letter template for defeating advertising and personal data usage](templates/template-widerspruch-datennutzung-nach-werbung.pdf)
+* `Rendered standard letter template <./templates/template-standard-letter.pdf>`_
+* `Rendered standard invoice template <./templates/template-invoice.pdf>`_
+* `Rendered standard letter template for defeating advertising and personal data usage <./templates/template-widerspruch-datennutzung-nach-werbung.pdf>`_
 
-When running --init, 'lco' files are copied to the ~/texmf/tex/latex/fensterbrief/ directory and 'texhash' is run afterwards.
+When running ``--init``, ``.lco`` files are copied to the ``~/texmf/tex/latex/fensterbrief/`` directory and ``texhash`` is run afterwards.
 
