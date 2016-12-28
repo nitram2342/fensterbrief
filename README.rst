@@ -124,7 +124,7 @@ configuration points as shown below. ::
     + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/briefvorlage.lco
     + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/template-widerspruch-datennutzung-nach-werbung.tex
 		    
-It is possible to use text makros such as the ${ROOT_DIR}.
+It is possible to use text makros such as the ``${ROOT_DIR}``.
 
 Customize templates
 -------------------
