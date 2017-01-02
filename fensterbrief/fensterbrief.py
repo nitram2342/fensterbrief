@@ -30,10 +30,10 @@ def list_files(dir_name, search=None):
                 print("  + %s" % os.path.relpath(os.path.join(dirpath, file), dir_name))
     
 
-def write_working_ref(doc_root, working_dir, working_tex_file, working_pdf_file=None):
+def write_working_ref(doc_root, working_dir, working_tex_file=None, working_pdf_file=None):
     """ Write information about the working directory into a file """
 
-    if working_pdf_file == None:
+    if working_tex_file != None and working_pdf_file == None:
         working_pdf_file = working_tex_file.replace(".tex", ".pdf")
     
     # create a config file
@@ -58,44 +58,65 @@ def load_working_ref(doc_root):
              'tex' : config.get('DEFAULT', 'WORKING_TEX_FILE'),
              'pdf' : config.get('DEFAULT', 'WORKING_PDF_FILE') }
 
-    
-
-def adopt(doc_root, src_file, keep_folder=False):
-    month_str = date.today().strftime("%Y-%m")
-    date_str = date.today().isoformat()
-
+def request_recipient():
     recipient_name = slugify(input("+ Recipient short name: "), separator="_")
+    return recipient_name
 
-    if not keep_folder:
-        folder_subject = slugify(input("+ Folder subject: "), separator="_")
-        foldername = "%s_%s-%s" % (month_str, recipient_name, folder_subject)
 
+def request_folder(recipient_name):
+    month_str = date.today().strftime("%Y-%m")
+    folder_subject = slugify(input("+ Folder subject: "), separator="_")
+    foldername = "%s_%s-%s" % (month_str, recipient_name, folder_subject)
+
+    return foldername
+
+
+def request_file(recipient_name):    
     letter_subject = slugify(input("+ Letter subject: "), separator="_")
-    new_filename = "%s_%s-%s.tex" % (date_str, recipient_name, letter_subject)
-    
-    
-    if not keep_folder:
-        print("+ Using this folder subject: %s" % folder_subject)
-    print("+ Using this letter subject: %s" % letter_subject)
-    print("+ Using this recipient: %s" % recipient_name)
+    filename = "%s_%s-%s.tex" % (date.today().isoformat(), \
+                                 recipient_name, letter_subject)
+    return filename
 
 
-    # check source file name
-    if not src_file.startswith("/"):
-        src_file = os.path.join(doc_root, src_file)
+def request_file_and_folder(recipient_name):
+    recipient_name = request_recipient()
+    foldername = request_folder(recipient_name)
+    filename = request_file(recipient_name)
     
-    # create directory
-    if keep_folder:
-        dst_folder_path = os.path.dirname(src_file)
-    else:
-        dst_folder_path = os.path.join(doc_root, foldername)
-        
+    return [foldername, filename]
+
+
+def create_folder(doc_root, foldername):
+
+    dst_folder_path = os.path.join(doc_root, foldername)
+    
     if not os.path.exists(dst_folder_path):
         print("+ Creating folder %s" % dst_folder_path)
         os.mkdir(dst_folder_path)
     else:
         print("+ Folder %s already exists. Skipping creation." % dst_folder_path)
+
+    # store referene to working dir
+    write_working_ref(doc_root, dst_folder_path)
+
+    return dst_folder_path
+
+
+def adopt(doc_root, src_file, keep_folder=False):
+
+    recipient_name = request_recipient()
+    new_filename = request_file(recipient_name)
     
+    if keep_folder:        
+        dst_folder_path = os.path.dirname(src_file)
+    else:
+        foldername = request_folder(recipient_name)
+        dst_folder_path = create_folder(doc_root, foldername)
+    
+    # check source file name
+    if not src_file.startswith("/"):
+        src_file = os.path.join(doc_root, src_file)
+         
     # copy file
     dst_file_path = os.path.join(dst_folder_path, new_filename)
     print("+ Copy file %s to %s" % (src_file, dst_file_path))

@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')
     parser.add_argument('--list-templates', help='List all letter templates', action='store_true')
     parser.add_argument('--list-letters', help='List all letters', action='store_true')
+    parser.add_argument('--create-folder', help='Ask for meta data and create a new folder', action='store_true')
     parser.add_argument('--search', help='Search for a string in filenames', metavar='STRING')
     parser.add_argument('--adopt', help='Create a new letter based on a previous one', metavar='FILE')
     parser.add_argument('--init', help='Initialize the environment', action='store_true')
@@ -61,6 +62,11 @@ def main():
 
     elif options.search:
         fensterbrief.list_letters(root_dir, options.search)
+
+    elif options.create_folder:
+        recipient_name = fensterbrief.request_recipient()
+        foldername = fensterbrief.request_folder(recipient_name)
+        dst_folder_path = fensterbrief.create_folder(root_dir, foldername)
 
     elif options.adopt:
         dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder)
