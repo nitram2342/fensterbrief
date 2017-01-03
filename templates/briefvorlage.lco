@@ -134,7 +134,7 @@
 	\usekomavar{fromstreetshort}\usekomavar{backaddressseparator} 
 	\usekomavar{fromdistrict}
 	\ifkomavarempty{fromcountry}{}{
-		\usekomavar{backaddressseparator}\usekomavar{fromcountry}} }}
+		\usekomavar{backaddressseparator}\usekomavar{fromcountry}} \usekomavar{PPdatamatrix} }}
 
 
 \makeatletter
