@@ -26,7 +26,7 @@ logging.config.dictConfig({
                 }
     })
 
-class mail_to_simple_fax_de:
+class soap_to_simple_fax_de:
 
     WSDLFILE = 'https://longisland.simple-fax.de/soap/index.php?wsdl'
 
@@ -34,9 +34,13 @@ class mail_to_simple_fax_de:
         self.config = config
 
     @staticmethod
-    def init_config(config):
-        config.set('soap_to_simple_fax_de', 'user', mail_from)
-        config.set('soap_to_simple_fax_de', 'password', '')
+    def init_config(config, mail_from, password):
+
+        assert config != None
+        
+        config['soap_to_simple_fax_de'] = {}
+        config['soap_to_simple_fax_de']['user'] =  mail_from
+        config['soap_to_simple_fax_de']['password'] = password
         
     def send(self, file, dst_fax_nr, subject):
 

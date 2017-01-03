@@ -11,8 +11,6 @@ from slugify import slugify
 import shutil
 import subprocess
 
-from pkg_resources import resource_stream, resource_listdir
-
 working_object_file = '.working_object.conf'
 
 def list_templates(dir_name):
@@ -128,84 +126,5 @@ def adopt(doc_root, src_file, keep_folder=False):
     
     return dst_file_path
 
-
-def init(config_file):
-
-    init_config_file()
-    init_templates(config_file)
-    
         
-def init_templates(config_file):
-
-
-    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
-    config.read(config_file)
-    template_dir = config.get('DEFAULT', 'TEMPLATE_DIR')
-      
-    texmf_dir =  os.path.expanduser('~/texmf/tex/latex/fensterbrief/')
-
-
-    # check if template directory exists
-    if not os.path.exists(template_dir):
-        answer = input("+ Shall directory %s be created? " % template_dir).lower()
-        if 'y' in answer:
-            os.makedirs(template_dir)
-        else:
-            return
-
-    # create user's 'texmf' directory
-    if not os.path.exists(texmf_dir):
-        answer = input("+ Shall directory %s be created? " % temxmf_dir).lower()
-        if 'y' in answer:
-            os.makedirs(texmf_dir)
-        else:
-            return
-    
-    # copy templates to tempalte directory
-    for res_name in resource_listdir('templates', ''):
-        if res_name.endswith(".tex") or res_name.endswith(".lco"):
-            src_fd = resource_stream('templates', res_name)            
-
-            if res_name.endswith(".tex"):
-                dst_file = os.path.join(template_dir, res_name)
-            else:
-                dst_file = os.path.join(texmf_dir, res_name)
-                
-            print("+ Copy resource file to %s" % dst_file)
-
-            write_file = False
-            if os.path.exists(dst_file):
-                answer = input("+ Shall %s be overwritten? " % dst_file).lower()
-                if 'y' in answer:
-                    write_file = True
-            else:
-                write_file = True
-
-            if write_file:
-                with open(dst_file, 'wb') as dst_fd:                
-                    shutil.copyfileobj(src_fd, dst_fd)
-
-    # update
-    subprocess.call(['texthash'])
-
-                    
-    
-def init_config_file():
-    
-    # create a config file
-    config = configparser.RawConfigParser()
-
-    root_dir =     input("+ Root directory, where letters should be stored        : ")
-    template_dir = input("+ Template directory, where template letters are stored : ")
-    editor =       input("+ Root directory, where letters should be stored        : ")
-
-    mail_from =    input("+ Your e-mail address                                   : ")
-
-    config.set('DEFAULT', 'ROOT_DIR', root_dir)
-    config.set('DEFAULT', 'TEMPLATE_DIR', template_dir)
-    config.set('DEFAULT', 'EDITOR', editor)
-
-    return config
-
-
 
