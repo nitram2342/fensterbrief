@@ -32,6 +32,11 @@ class mail_to_simple_fax_de:
 
     def __init__(self, config):
         self.config = config
+
+    @staticmethod
+    def init_config(config):
+        config.set('soap_to_simple_fax_de', 'user', mail_from)
+        config.set('soap_to_simple_fax_de', 'password', '')
         
     def send(self, file, dst_fax_nr, subject):
 

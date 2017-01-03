@@ -131,8 +131,7 @@ def adopt(doc_root, src_file, keep_folder=False):
 
 def init(config_file):
 
-    if not os.path.exists(config_file):
-        init_config_file(config_file)
+    init_config_file()
     init_templates(config_file)
     
         
@@ -191,7 +190,7 @@ def init_templates(config_file):
 
                     
     
-def init_config_file(config_file):
+def init_config_file():
     
     # create a config file
     config = configparser.RawConfigParser()
@@ -206,16 +205,7 @@ def init_config_file(config_file):
     config.set('DEFAULT', 'TEMPLATE_DIR', template_dir)
     config.set('DEFAULT', 'EDITOR', editor)
 
+    return config
 
-    config.set('mail_to_simple_fax_de', 'mail_client', 'thunderbird')
-    config.set('mail_to_simple_fax_de', 'mail_from', 'id1')
-
-    config.set('soap_to_simple_fax_de', 'user', mail_from)
-    config.set('soap_to_simple_fax_de', 'password', '')
-    
-    with open(config_file, 'w') as cf_handle:
-        print("+ Writing configuration file %s. You may want to edit this file later for further configuration." % config_file)
-        config.write(cf_handle)
-        os.chmod(config_file, 0o600)
 
 

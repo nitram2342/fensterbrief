@@ -30,7 +30,19 @@ def main():
     (options, args) = parser.parse_known_args()
 
     if options.init:
-        fensterbrief.init(config_file)
+
+        if not os.path.exists(config_file):
+        
+            config = fensterbrief.init(config_file)
+            # init modules
+            mail_to_simple_fax_de.init_config(config)
+            soap_to_simple_fax_de.init_config(config)
+
+            with open(config_file, 'w') as cf_handle:
+                print("+ Writing configuration file %s. You may want to edit this file later for further configuration." % config_file)
+                config.write(cf_handle)
+                os.chmod(config_file, 0o600)
+
         return
 
     
