@@ -266,3 +266,8 @@ Create a signature file
 Sometimes it is useful to have a digital version of one's signature to include it in a letter, when it is sent as fax via an Internet service. This is more convinient than printing a letter, placing a signature, scan it as PDF file.
 
 A step-by-step guide to achieve this is describe in a [stackoverflow article](https://tex.stackexchange.com/questions/32911/adding-a-signature-on-an-online-job-application/32940#32940).
+
+Copyright and Licence
+---------------------
+
+``Fensterbrief`` is developed by Martin Schobert <martin@schobert.cc> and published under a BSD licence with a non-military clause. Please read ``LICENSE.txt`` for further details.

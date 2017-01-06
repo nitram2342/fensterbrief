@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+#  Copyright 2016 Martin Schobert <martin@weltregierung.de>
+#  
+
 import configparser
 import subprocess
 

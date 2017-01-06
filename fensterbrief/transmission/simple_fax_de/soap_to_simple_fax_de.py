@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+#  Copyright 2016 Martin Schobert <martin@weltregierung.de>
+#  
+
 from zeep import Client
 import base64
 import logging.config
