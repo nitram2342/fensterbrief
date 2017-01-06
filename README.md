@@ -97,7 +97,9 @@ Search for a string in directory and filenames
 Create a new letter based on an old one
 ---------------------------------------
 
-Often you already started a letter conversation with a recipient and have a followup letter. You like to adopt the old LaTeX letter, because you inserted reference numbers such as you customer or tax ID or the destination address. To write a new letter, you simply copy the old LaTeX file to a new destination folder.
+Often you already started a letter conversation with a recipient and have a followup letter. You like to adopt the old LaTeX letter, because you inserted reference numbers such as you customer or tax ID or the destination address. To write a new letter, you simply copy the old LaTeX file to a new destination folder. Technically, it makes no difference, whether you adopt an old letter or a template file.
+
+
 ```
      $ fensterbrief --adopt 2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex
      Recipient short name: company X
@@ -121,7 +123,11 @@ When a letter is created, ``fensterbrief`` keeps track of it in a file ``${ROOT_
 Markdown-based letters
 ----------------------
 
-Adopting a Markdown letter isn't much different from a LaTeX-based letter. Usually, you likely use a more general editor that may not support LaTeX/pandoc directly. Therefore, you may want to render your letters explicitly as shown below:
+Adopting a Markdown letter isn't much different from creating a LaTeX-based letter. The source file of a Markdown-based letter looks like this:
+
+[Sample Markdown letter](./templates/template-pandoc.md)
+
+Usually, you likely use a more general editor that may not support LaTeX/pandoc directly. Therefore, you may want to render your letters explicitly as shown below:
 
 ```
      $ fensterbrief --render
@@ -134,6 +140,10 @@ If you want to make further changes to your letter, you can run the editor again
 ```
      $ fensterbrief --edit
 ```
+
+To render PDF files from Markdown via LaTeX, ``Fensterbrief`` uses [pandoc](https://pandoc.org/) with this LaTeX template:
+
+[LaTeX letter template used as pandoc template](./templates/template-pandoc.tex)
 
 
 Sending a letter
