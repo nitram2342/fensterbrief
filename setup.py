@@ -20,7 +20,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='0.0.1',
 
-    description='Fensterbrief is a python script to organize and work with LaTeX-based letters.',
+    description='Fensterbrief is a python script to organize and work with LaTeX and Markdown based letters.',
     long_description=long_description,
 
     # The project's main homepage.
@@ -68,7 +68,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['configparser', 'python-slugify', 'zeep'],
+    install_requires=['configparser', 'python-slugify', 'zeep', 'pandoc'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
