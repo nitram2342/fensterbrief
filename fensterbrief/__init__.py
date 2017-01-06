@@ -9,6 +9,7 @@ import shutil
 from fensterbrief import fensterbrief
 from fensterbrief.transmission.simple_fax_de.mail_to_simple_fax_de import mail_to_simple_fax_de
 from fensterbrief.transmission.simple_fax_de.soap_to_simple_fax_de import soap_to_simple_fax_de
+from fensterbrief.stamps.frank import frank
 
 from pkg_resources import resource_stream, resource_listdir
 
@@ -19,7 +20,6 @@ def init_templates(config_file):
     template_dir = config.get('DEFAULT', 'TEMPLATE_DIR')
       
     texmf_dir =  os.path.expanduser('~/texmf/tex/latex/fensterbrief/')
-
 
     # check if template directory exists
     if not os.path.exists(template_dir):
@@ -89,7 +89,7 @@ def init_modules(config):
             
     mail_to_simple_fax_de.init_config(config)
     soap_to_simple_fax_de.init_config(config, mail_from, password)
-    
+    frank.init_config(config)
     
 
 def main():
@@ -108,9 +108,11 @@ def main():
     parser.add_argument('--init', help='Initialize the environment', action='store_true')
     parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
+    parser.add_argument('--set-folder', help='Set the working folder', metavar='DIR')
     parser.add_argument('--mail-simple-fax', help='Send a fax via simple-fax.de using the e-mail interface', metavar='DEST')
     parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
-      
+    parser.add_argument('--buy-stamp', help='Buy a stamp. Place postage file in current folder or use together with --adopt.', nargs='?', metavar='PRODUCT_ID', default=None)
+    
     (options, args) = parser.parse_known_args()
 
     if options.init:
@@ -159,6 +161,10 @@ def main():
     elif options.search:
         fensterbrief.list_letters(root_dir, options.search)
 
+    elif options.set_folder:
+        print("+ Set working folder to %s" % options.set_folder)
+        fensterbrief.write_working_ref(root_dir, options.set_folder)
+        
     elif options.create_folder:
         recipient_name = fensterbrief.request_recipient()
         foldername = fensterbrief.request_folder(recipient_name)
@@ -166,7 +172,18 @@ def main():
 
     elif options.adopt:
         dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder)
+
+        if options.buy_stamp:
+            f = frank.frank(config)
+            f.buy_stamp(os.path.dirname(dst_file_name), options.buy_stamp)
+        
         subprocess.call([config.get('DEFAULT', 'EDITOR'), dst_file_name])
+
+    elif options.buy_stamp: # after adopt
+        working_ref = fensterbrief.load_working_ref(root_dir)
+        f = frank.frank(config)
+        f.buy_stamp(working_ref['dir'], options.buy_stamp)
+        
 
     elif options.mail_simple_fax or options.soap_simple_fax:
       

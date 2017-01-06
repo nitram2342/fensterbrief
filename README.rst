@@ -47,8 +47,8 @@ The ``fensterbrief`` tool is command line based: ::
                             Send a fax via simple-fax.de using the SOAP interface
 							      
 
-List all archived letters:
-------------
+List all archived letters
+-------------------------
 
 ::
   
@@ -112,6 +112,22 @@ Therefore, I prefer the mail interface, because their e-mail interface sends sta
 It will launch a prefilled 'new mail' dialog. Currently, only Thunderbird is supported. If you work with multiple e-mail accounts or e-mail identities, please make sure, the correct 'from' address is selected. The ``~/.fensterbrief.conf`` configuration file has a setting for this (``mail_from`` in section ``mail_to_simple_fax_de``). For some reason, an index such as ``id2`` must be specified to select the 'from' address instead of using just an ordinary e-mail address.
 
 
+Buying postage
+--------------
+
+``Fensterbrief`` uses the tool [``frank``][https://github.com/gsauthof/frank] to buy stamps for the Deutsche Post. These stamps are named "Internetmarke" or "1C4A" for "1Click4Applikation". Once, ``frank`` is set up, you can buy stamps in two modes.
+
+Buying postage, when creating a letter: ::
+
+     $ fensterbrief --adopt 2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex --buy-stamp
+
+Buying postage for the current letter: ::
+
+     $ fensterbrief --buy-stamp
+
+The later approach works, because ``Fensterbrief`` stores the path and filenames of the current folder and letter.
+
+     
 Installation
 ==================
 
@@ -168,12 +184,31 @@ Example configuration file ``~/.fensterbrief.conf``: ::
   template_dir = ${ROOT_DIR}/_templates/
   editor = texmaker
 
+  
   [mail_to_simple_fax_de]
   mail_client = thunderbird
   mail_from = id3
 
+  
   [soap_to_simple_fax_de]
   user = foo@exmaple.com
   password = secret
-  
 
+  
+  [frank]
+  program = /home/martin/Development/frank/frank.py
+  product = 1
+
+Setup ``frank`` to buy stamps
+-----------------------------
+
+``Fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is based on the python module [``python-inema``][https://pypi.python.org/pypi/inema].
+
+Setting up ``frank`` is a bit complex, because it requires manual interactions aka. sending mails to the system operator. To use frank, please refer to the instructions on the [github page of ``frank``][https://github.com/gsauthof/frank].
+
+Create a signature file
+-----------------------
+
+Sometimes it is useful to have a digital version of one's signature to include it in a letter, when it is sent as fax via an Internet service. This is more convinient than printing a letter, placing a signature, scan it as PDF file.
+
+A step-by-step guide to achieve this is describe in a [stackoverflow article][https://tex.stackexchange.com/questions/32911/adding-a-signature-on-an-online-job-application/32940#32940].

@@ -31,6 +31,14 @@ def list_files(dir_name, search=None):
 def write_working_ref(doc_root, working_dir, working_tex_file=None, working_pdf_file=None):
     """ Write information about the working directory into a file """
 
+    # if working dir is absolute, make a directory name relative to doc_root
+    if os.sep in working_dir and os.path.exists(working_dir):
+        working_dir = os.path.abspath(working_dir)
+        working_dir = os.path.relpath(working_dir, doc_root)
+
+    print("+ Change folder to %s" % working_dir)
+
+    # derive PDF file name from LaTeX filename
     if working_tex_file != None and working_pdf_file == None:
         working_pdf_file = working_tex_file.replace(".tex", ".pdf")
     
