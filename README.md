@@ -25,7 +25,7 @@ Features
 
 * intended to be used via command line
 * maintaining a folder and document structure
-* support for LaTex and Markdown based letters
+* support for LaTeX and Markdown based letters
 * support for fax transmissions via simple-fax.de
 * support for buying postage for the Deutsche Post
 
@@ -35,29 +35,37 @@ Usage
 
 The ``fensterbrief`` tool is command line based:
 ```
-    $ fensterbrief --help
-    usage: fensterbrief [-h] [--config FILE] [--list-templates] [--list-letters]
-                        [--search STRING] [--adopt FILE] [--init] [--keep-folder]
-		        [--verbose] [--mail-simple-fax DEST]
-			[--soap-simple-fax DEST]
+usage: fensterbrief [-h] [--config FILE] [--list-templates] [--list-letters]
+                    [--create-folder] [--search STRING] [--adopt FILE]
+                    [--init] [--keep-folder] [--verbose] [--edit] [--render]
+                    [--set-folder DIR] [--mail-simple-fax DEST]
+                    [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
 
-    A command line tool to prepare letters
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      --config FILE         The configuration file to use
-      --list-templates      List all letter templates
-      --list-letters        List all letters
-      --search STRING       Search for a string in filenames
-      --adopt FILE          Create a new letter based on a previous one
-      --init                Initialize the environment
-      --keep-folder         Store the adopted letter in the same folder
-      --verbose             Show what is going on
-      --mail-simple-fax DEST
-                            Send a fax via simple-fax.de using the e-mail
-			    interface
-      --soap-simple-fax DEST
-                            Send a fax via simple-fax.de using the SOAP interface
+A command line tool to prepare letters
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config FILE         The configuration file to use
+  --list-templates      List all letter templates
+  --list-letters        List all letters
+  --create-folder       Ask for meta data and create a new folder
+  --search STRING       Search for a string in filenames
+  --adopt FILE          Create a new letter based on a previous one
+  --init                Initialize the environment
+  --keep-folder         Store the adopted letter in the same folder
+  --verbose             Show what is going on
+  --edit                Edit the current letter source file
+  --render              Render PDF file from current markdown or latex
+  --set-folder DIR      Set the working folder
+  --mail-simple-fax DEST
+                        Send a fax via simple-fax.de using the e-mail
+                        interface
+  --soap-simple-fax DEST
+                        Send a fax via simple-fax.de using the SOAP interface
+  --buy-stamp [PRODUCT_ID]
+                        Buy a stamp. Place postage file in current folder or
+                        use together with --adopt.
+
 ```
 
 
@@ -101,13 +109,31 @@ Often you already started a letter conversation with a recipient and have a foll
      + Creating folder /home/martin/Documents/Vorgaenge/2016-12_company_X-Klarung_Situation_X
      + Copy file /home/martin/Documents/Vorgaenge/2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex to /home/martin/Documents/Vorgaenge/2016-12_company_X-Klarung_Situation_X/2016-12-14_company_X-Klarung_Situation_X.tex
 ```
-Afterwards, the Fensterbrief script will launch the LaTeX editor that has been configured.
+Afterwards, the Fensterbrief script will launch the LaTeX editor that has been configured. Since LaTeX editors usually support a build-in function for rendering and printing, there are no further steps relevant here. If you use a editor that does not support rendering, you can render your letter from command line, too. Please refer to the bext section.
 
 If you write a follow-up letter and want to store this letter in the same directory as the original letter, just add option --keep-folder.
 ```
      $ fensterbrief --adopt ... --keep-folder
 ```
 When a letter is created, ``fensterbrief`` keeps track of it in a file ``${ROOT_DIR}/.working_object.conf``. This file references the current letter and simplifies the process of interacting with the letter.
+
+
+Markdown-based letters
+----------------------
+
+Adopting a Markdown letter isn't much different from a LaTeX-based letter. Usually, you likely use a more general editor that may not support LaTeX/pandoc directly. Therefore, you may want to render your letters explicitly as shown below:
+
+```
+     $ fensterbrief --render
+```
+
+Afterwards you can open the rendered PDF file in a PDF viewer, check the output and print the document.
+
+If you want to make further changes to your letter, you can run the editor again:
+
+```
+     $ fensterbrief --edit
+```
 
 
 Sending a letter
@@ -178,7 +204,7 @@ Customize templates
 The wizzard copys template files to the user's template directory. These templates should be
 customized in a last step.
 
-You can use your own LaTex templates. They can be based on the LaTeX g-brief, on scrlttr2 or on any other letter class. The templates that are shiped in this package are based on scrlttr2. There are plenty of template examples on the Internet, which you can adjust to your needs. My templates look like this:
+You can use your own LaTeX templates. They can be based on the LaTeX g-brief, on scrlttr2 or on any other letter class. The templates that are shipped in this package are based on scrlttr2. There are plenty of template examples on the Internet, which you can adjust to your needs. My templates look like this:
 
 * [Rendered standard letter template](./templates/template-standard-letter.pdf)
 * [Rendered standard invoice template](./templates/template-invoice.pdf)
@@ -194,16 +220,21 @@ Example configuration file ``~/.fensterbrief.conf``:
   [DEFAULT]
   root_dir = /home/martin/Documents/Vorgaenge/
   template_dir = ${ROOT_DIR}/_templates/
-  editor = texmaker
+  tex_editor = texmaker
+  md_editor = emacs
 
-  
+  [pandoc]
+  program = pandoc
+  template = ${template_dir}/template-pandoc.tex
+
+
   [mail_to_simple_fax_de]
   mail_client = thunderbird
   mail_from = id3
 
   
   [soap_to_simple_fax_de]
-  user = foo@exmaple.com
+  user = foo@example.com
   password = secret
 
   
