@@ -1,0 +1,39 @@
+\documentclass[briefvorlage,
+   parskip=half,%%           Abstand zwischen Absaetzen
+   fromfax=on,%%             Faxnummer!
+   fromemail=on,%%           Emailadresse!
+   locfield=wide,%%          zusaetzliches Feld fuer Absender!
+   draft=false%%             Entwurfsmodus!
+]{scrlttr2}
+
+% Bei Briefen in das Ausland
+%\setkomavar{fromcountry}{Germany}
+
+% Falls eine Unterschrift genutzt werden soll
+%\setkomavar{signature}{\\[-3\baselineskip]
+%\includegraphics[scale=.5]{../signature.pdf}\\
+%Foo Bar}
+
+% \setkomavar{PPdatamatrix}{\includegraphics[trim=75mm 245mm 115mm 25mm]{postage_2017-01-03.pdf}}
+
+\begin{document}
+ \begin{letter}{
+     $for(to)$
+     $to$ \\
+     $endfor$}
+
+\setkomavar{subject}{$subject$}
+
+$if(customer)$\setkomavar{customer}[\normalfont Kundennummer]{$customer$} $endif$
+$if(your_ref)$\setkomavar{yourref}[\normalfont Ihr Zeichen] {$your_ref$} $endif$
+$if(my_ref)$\setkomavar{myref}[\normalfont Mein Zeichen]{$my_ref$} $endif$
+
+\setkomavar{date}[\normalfont Datum]{\today}
+\opening{$opening$}
+
+$body$
+
+\closing{$closing$}
+\end{letter}
+ 
+\end{document}

@@ -24,7 +24,7 @@ def list_letters(dir_name, search=None):
 def list_files(dir_name, search=None):
     for (dirpath, dirnames, filenames) in os.walk(dir_name):
         for file in sorted(filenames):
-            if file.endswith(".tex") and (search == None or search.lower() in file.lower()):
+            if (file.endswith(".tex") or file.endswith(".md") )and (search == None or search.lower() in file.lower()):
                 print("  + %s" % os.path.relpath(os.path.join(dirpath, file), dir_name))
     
 
@@ -40,6 +40,7 @@ def write_working_ref(doc_root, working_dir, working_tex_file=None, working_pdf_
 
     # derive PDF file name from LaTeX filename
     if working_tex_file != None and working_pdf_file == None:
+        working_pdf_file = working_tex_file.replace(".md", ".pdf")
         working_pdf_file = working_tex_file.replace(".tex", ".pdf")
     
     # create a config file
@@ -77,17 +78,17 @@ def request_folder(recipient_name):
     return foldername
 
 
-def request_file(recipient_name):    
+def request_file(recipient_name, filetype="tex"):
     letter_subject = slugify(input("+ Letter subject: "), separator="_")
-    filename = "%s_%s-%s.tex" % (date.today().isoformat(), \
-                                 recipient_name, letter_subject)
+    filename = "%s_%s-%s.%s" % (date.today().isoformat(), \
+                                recipient_name, letter_subject, filetype)
     return filename
 
 
-def request_file_and_folder(recipient_name):
+def request_file_and_folder(recipient_name, filetype="tex"):
     recipient_name = request_recipient()
     foldername = request_folder(recipient_name)
-    filename = request_file(recipient_name)
+    filename = request_file(recipient_name, filetype)
     
     return [foldername, filename]
 
@@ -111,7 +112,14 @@ def create_folder(doc_root, foldername):
 def adopt(doc_root, src_file, keep_folder=False):
 
     recipient_name = request_recipient()
-    new_filename = request_file(recipient_name)
+
+    if src_file.endswith(".tex"):
+        new_filename = request_file(recipient_name, 'tex')
+    elif src_file.endswith(".md"):
+        new_filename = request_file(recipient_name, 'md')
+    else:
+        print("+ Unkown file suffix in %s. Can't process file." % src_file)
+        return None
     
     if keep_folder:        
         dst_folder_path = os.path.dirname(src_file)

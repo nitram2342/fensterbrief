@@ -39,10 +39,10 @@ def init_templates(config_file):
     
     # copy templates to tempalte directory
     for res_name in resource_listdir('templates', ''):
-        if res_name.endswith(".tex") or res_name.endswith(".lco"):
+        if res_name.endswith(".tex") or res_name.endswith(".md") or res_name.endswith(".lco"):
             src_fd = resource_stream('templates', res_name)            
 
-            if res_name.endswith(".tex"):
+            if res_name.endswith(".tex") or res_name.endswith(".md"):
                 dst_file = os.path.join(template_dir, res_name)
             else:
                 dst_file = os.path.join(texmf_dir, res_name)
@@ -73,11 +73,13 @@ def init_config_file():
 
     root_dir =     input("+ Root directory, where letters should be stored        : ")
     template_dir = input("+ Template directory, where template letters are stored : ")
-    editor =       input("+ Your preferred LaTeX editor                           : ")
+    tex_editor =   input("+ Your preferred LaTeX editor                           : ")
+    md_editor =    input("+ Your preferred Markdown editor                        : ")
 
     config.set('DEFAULT', 'ROOT_DIR', root_dir)
     config.set('DEFAULT', 'TEMPLATE_DIR', template_dir)
-    config.set('DEFAULT', 'EDITOR', editor)
+    config.set('DEFAULT', 'TEX_EDITOR', tex_editor)
+    config.set('DEFAULT', 'MD_EDITOR', md_editor)
 
     return config
 
@@ -173,12 +175,18 @@ def main():
     elif options.adopt:
         dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder)
 
-        if options.buy_stamp:
-            f = frank.frank(config)
-            f.buy_stamp(os.path.dirname(dst_file_name), options.buy_stamp)
-        
-        subprocess.call([config.get('DEFAULT', 'EDITOR'), dst_file_name])
+        if dst_file_name:
+            if options.buy_stamp:
+                f = frank.frank(config)
+                f.buy_stamp(os.path.dirname(dst_file_name), options.buy_stamp)
 
+            if dst_file_name.endswith(".tex"):
+                subprocess.call([config.get('DEFAULT', 'TEX_EDITOR'), dst_file_name])
+            elif dst_file_name.endswith(".md")::
+                subprocess.call([config.get('DEFAULT', 'MD_EDITOR'), dst_file_name])
+            else:
+                print("+ Unsupported file") # already catched by 'if dst_file_name'
+                
     elif options.buy_stamp: # after adopt
         working_ref = fensterbrief.load_working_ref(root_dir)
         f = frank.frank(config)
