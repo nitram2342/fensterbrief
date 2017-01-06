@@ -102,7 +102,7 @@ Sending a letter
 
 Usually, you will print your letter from the LaTex editor and close the editor afterwards. However, sometimes a letter should not be sent via snail mail, instead it should be sent via Fax. Because I use the prepaid service from http://simple-fax.de, ``fensterbrief`` supports this service provider.
 
-Simple-fax.de supports fax sending via a [SOAP-based web API](http://simple-fax.de/Downloads/SOAP-API-simplefax.pdf>). However, this interface lacks support for a transmission confirmation. The simple-fax interface will call you back on your own web interface for status tracking, but you have to setup your status handler and you will not get a fancy transmission confirmation.
+Simple-fax.de supports fax sending via a [SOAP-based web API](http://simple-fax.de/Downloads/SOAP-API-simplefax.pdf). However, this interface lacks support for a transmission confirmation. The simple-fax interface will call you back on your own web interface for status tracking, but you have to setup your status handler and you will not get a fancy transmission confirmation.
 
 Therefore, I prefer the mail interface, because their e-mail interface sends status messages, a transmission confirmation PDF including the first page of your fax message, and you will have everything archived in your mail user agent. To send your letter ``fensterbrief`` will invoke your mail client. ::
 
@@ -202,7 +202,7 @@ Example configuration file ``~/.fensterbrief.conf``: ::
 Setup ``frank`` to buy stamps
 -----------------------------
 
-``Fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is based on the python module [python-inema](https://pypi.python.org/pypi/inema>).
+``Fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is based on the python module [python-inema](https://pypi.python.org/pypi/inema).
 
 Setting up ``frank`` is a bit complex, because it requires manual interactions aka. sending mails to the system operator. To use frank, please refer to the instructions on the `github page of [``frank``](https://github.com/gsauthof/frank).
 
@@ -211,4 +211,4 @@ Create a signature file
 
 Sometimes it is useful to have a digital version of one's signature to include it in a letter, when it is sent as fax via an Internet service. This is more convinient than printing a letter, placing a signature, scan it as PDF file.
 
-A step-by-step guide to achieve this is describe in a [stackoverflow article](https://tex.stackexchange.com/questions/32911/adding-a-signature-on-an-online-job-application/32940#32940>).
+A step-by-step guide to achieve this is describe in a [stackoverflow article](https://tex.stackexchange.com/questions/32911/adding-a-signature-on-an-online-job-application/32940#32940).
