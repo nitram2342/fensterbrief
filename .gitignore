@@ -7,6 +7,10 @@ dist/
 __pycache__/
 *.so
 *~
+*.aux
+*.log
+*.gz
+*.out
 
 # due to using tox and pytest
 .tox
