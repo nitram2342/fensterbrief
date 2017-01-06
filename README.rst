@@ -115,7 +115,7 @@ It will launch a prefilled 'new mail' dialog. Currently, only Thunderbird is sup
 Buying postage
 --------------
 
-``Fensterbrief`` uses the tool ```frank``<https://github.com/gsauthof/frank>` to buy stamps for the Deutsche Post. These stamps are named "Internetmarke" or "1C4A" for "1Click4Applikation". Once, ``frank`` is set up, you can buy stamps in two modes.
+``Fensterbrief`` uses the tool `frank<https://github.com/gsauthof/frank>` to buy stamps for the Deutsche Post. These stamps are named "Internetmarke" or "1C4A" for "1Click4Applikation". Once, ``frank`` is set up, you can buy stamps in two modes.
 
 Buying postage, when creating a letter: ::
 
@@ -202,9 +202,9 @@ Example configuration file ``~/.fensterbrief.conf``: ::
 Setup ``frank`` to buy stamps
 -----------------------------
 
-``Fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is based on the python module [``python-inema``][https://pypi.python.org/pypi/inema].
+``Fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is based on the python module `python-inema<https://pypi.python.org/pypi/inema>`.
 
-Setting up ``frank`` is a bit complex, because it requires manual interactions aka. sending mails to the system operator. To use frank, please refer to the instructions on the `github page of ``frank``<https://github.com/gsauthof/frank>`.
+Setting up ``frank`` is a bit complex, because it requires manual interactions aka. sending mails to the system operator. To use frank, please refer to the instructions on the `github page of `frank<https://github.com/gsauthof/frank>`.
 
 Create a signature file
 -----------------------
