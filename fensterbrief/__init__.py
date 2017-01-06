@@ -76,19 +76,23 @@ def init_config_file():
     tex_editor =   input("+ Your preferred LaTeX editor                           : ")
     md_editor =    input("+ Your preferred Markdown editor                        : ")
 
-    config.set('DEFAULT', 'ROOT_DIR', root_dir)
-    config.set('DEFAULT', 'TEMPLATE_DIR', template_dir)
-    config.set('DEFAULT', 'TEX_EDITOR', tex_editor)
-    config.set('DEFAULT', 'MD_EDITOR', md_editor)
+    config['DEFAULT']['ROOT_DIR'] = root_dir
+    config['DEFAULT']['TEMPLATE_DIR'] = template_dir
+    config['DEFAULT']['TEX_EDITOR'] = tex_editor
+    config['DEFAULT']['MD_EDITOR'] = md_editor
 
     return config
 
 
+def init_pandoc(config):
+    config['pandoc']['program'] = 'pandoc'
+    config['pandoc']['template'] = '${template_dir}/template-pandoc.tex'    
 
 def init_modules(config):
     mail_from = input("+ Your e-mail address for simple-fax.de                 : ")
     password =  input("+ Your password for simple-fax.de                       : ")
             
+    init_pandoc(config)
     mail_to_simple_fax_de.init_config(config)
     soap_to_simple_fax_de.init_config(config, mail_from, password)
     frank.init_config(config)
@@ -101,19 +105,22 @@ def main():
 
     # process command line arguments
     parser = argparse.ArgumentParser(description='A command line tool to prepare letters') 
-    parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')
     parser.add_argument('--list-templates', help='List all letter templates', action='store_true')
     parser.add_argument('--list-letters', help='List all letters', action='store_true')
-    parser.add_argument('--create-folder', help='Ask for meta data and create a new folder', action='store_true')
     parser.add_argument('--search', help='Search for a string in filenames', metavar='STRING')
+    parser.add_argument('--create-folder', help='Ask for meta data and create a new folder', action='store_true')
     parser.add_argument('--adopt', help='Create a new letter based on a previous one', metavar='FILE')
-    parser.add_argument('--init', help='Initialize the environment', action='store_true')
-    parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
-    parser.add_argument('--verbose', help='Show what is going on', action='store_true')
+    parser.add_argument('--edit', help='Edit the current letter source file', action='store_true')
+    parser.add_argument('--render', help='Render PDF file from current markdown or latex', action='store_true')
     parser.add_argument('--set-folder', help='Set the working folder', metavar='DIR')
     parser.add_argument('--mail-simple-fax', help='Send a fax via simple-fax.de using the e-mail interface', metavar='DEST')
     parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
-    parser.add_argument('--buy-stamp', help='Buy a stamp. Place postage file in current folder or use together with --adopt.', nargs='?', metavar='PRODUCT_ID', default=None)
+    parser.add_argument('--buy-stamp', help='Buy a stamp. Place postage file in current folder or use together with --adopt.', nargs='?', metavar='PRODUCT_ID', const='1')
+
+    parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
+    parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')   
+    parser.add_argument('--verbose', help='Show what is going on', action='store_true')
+    parser.add_argument('--init', help='Initialize the environment', action='store_true')
     
     (options, args) = parser.parse_known_args()
 
@@ -155,13 +162,13 @@ def main():
     root_dir = config.get('DEFAULT', 'ROOT_DIR')
 
     if options.list_templates:
-        fensterbrief.list_templates(template_dir)
+        fensterbrief.list_templates(template_dir, root_dir)
 
     elif options.list_letters:
         fensterbrief.list_letters(root_dir)
 
     elif options.search:
-        fensterbrief.list_letters(root_dir, options.search)
+        fensterbrief.list_letters(root_dir, options.search, root_dir)
 
     elif options.set_folder:
         print("+ Set working folder to %s" % options.set_folder)
@@ -180,19 +187,38 @@ def main():
                 f = frank.frank(config)
                 f.buy_stamp(os.path.dirname(dst_file_name), options.buy_stamp)
 
-            if dst_file_name.endswith(".tex"):
-                subprocess.call([config.get('DEFAULT', 'TEX_EDITOR'), dst_file_name])
-            elif dst_file_name.endswith(".md")::
-                subprocess.call([config.get('DEFAULT', 'MD_EDITOR'), dst_file_name])
-            else:
-                print("+ Unsupported file") # already catched by 'if dst_file_name'
-                
+            edit_file(dst_file_name, config)
+            
     elif options.buy_stamp: # after adopt
         working_ref = fensterbrief.load_working_ref(root_dir)
         f = frank.frank(config)
-        f.buy_stamp(working_ref['dir'], options.buy_stamp)
-        
+        outdir = os.path.join(root_dir, working_ref['dir'])
+        f.buy_stamp(outdir, options.buy_stamp)
 
+    elif options.edit:
+        working_ref = fensterbrief.load_working_ref(root_dir)
+        src_file = os.path.join(root_dir, working_ref['dir'], working_ref['src'])
+        print("+ Edit file %s" % src_file)
+        fensterbrief.edit_file(src_file, config)
+        
+    elif options.render:
+        working_ref = fensterbrief.load_working_ref(root_dir)
+        src_file = os.path.join(root_dir, working_ref['dir'], working_ref['src'])
+        pdf_file = os.path.join(root_dir, working_ref['dir'], working_ref['pdf'])        
+
+        print("+ Rendering file %s" % src_file)
+        print("+ Output file %s" % pdf_file)
+        
+        if src_file.endswith('.tex'):
+            subprocess.call(['latex', '-batch', src_file])           
+        elif src_file.endswith('.md'):
+            subprocess.call([config['pandoc']['program'], \
+                             '--template', config['pandoc']['template'], \
+                             '--output', pdf_file, src_file])
+        else:
+            print("+ Error: unknown file type for %s" % src_file)
+
+        
     elif options.mail_simple_fax or options.soap_simple_fax:
       
         if options.mail_simple_fax:

@@ -13,22 +13,22 @@ import subprocess
 
 working_object_file = '.working_object.conf'
 
-def list_templates(dir_name):
+def list_templates(dir_name, rel_dir):
     print("+ Looking up templates in %s" % dir_name)
-    list_files(dir_name)
+    list_files(dir_name, None, rel_dir)
                 
 def list_letters(dir_name, search=None):
     print("+ Looking up letters in %s" % dir_name)
-    list_files(dir_name, search)
+    list_files(dir_name, search, dir_name)
 
-def list_files(dir_name, search=None):
+def list_files(dir_name, search=None, rel_dir=None):
     for (dirpath, dirnames, filenames) in os.walk(dir_name):
         for file in sorted(filenames):
             if (file.endswith(".tex") or file.endswith(".md") )and (search == None or search.lower() in file.lower()):
-                print("  + %s" % os.path.relpath(os.path.join(dirpath, file), dir_name))
+                print("  + %s" % os.path.relpath(os.path.join(dirpath, file), rel_dir))
     
 
-def write_working_ref(doc_root, working_dir, working_tex_file=None, working_pdf_file=None):
+def write_working_ref(doc_root, working_dir, working_src_file=None, working_pdf_file=None):
     """ Write information about the working directory into a file """
 
     # if working dir is absolute, make a directory name relative to doc_root
@@ -38,17 +38,17 @@ def write_working_ref(doc_root, working_dir, working_tex_file=None, working_pdf_
 
     print("+ Change folder to %s" % working_dir)
 
-    # derive PDF file name from LaTeX filename
-    if working_tex_file != None and working_pdf_file == None:
-        working_pdf_file = working_tex_file.replace(".md", ".pdf")
-        working_pdf_file = working_tex_file.replace(".tex", ".pdf")
+    # derive PDF file name from LaTeX/MD filename
+    if working_src_file != None and working_pdf_file == None:
+        working_pdf_file = working_src_file.replace(".md", ".pdf").replace(".tex", ".pdf")
+        print("+ PDF output file will be %s" % working_pdf_file)
     
     # create a config file
     config = configparser.RawConfigParser()
 
-    config.set('DEFAULT', 'WORKING_DIR', working_dir)
-    config.set('DEFAULT', 'WORKING_TEX_FILE', working_tex_file)
-    config.set('DEFAULT', 'WORKING_PDF_FILE', working_pdf_file)
+    config['DEFAULT']['dir'] = str(working_dir)
+    config['DEFAULT']['src'] = str(working_src_file)
+    config['DEFAULT']['pdf'] = str(working_pdf_file)
 
     file = os.path.join(doc_root, working_object_file)
     with open(file, 'w') as fh:
@@ -61,9 +61,7 @@ def load_working_ref(doc_root):
     file = os.path.join(doc_root, working_object_file)
 
     config.read(file)
-    return { 'dir' : config.get('DEFAULT', 'WORKING_DIR'),
-             'tex' : config.get('DEFAULT', 'WORKING_TEX_FILE'),
-             'pdf' : config.get('DEFAULT', 'WORKING_PDF_FILE') }
+    return config['DEFAULT']
 
 def request_recipient():
     recipient_name = slugify(input("+ Recipient short name: "), separator="_")
@@ -143,4 +141,10 @@ def adopt(doc_root, src_file, keep_folder=False):
     return dst_file_path
 
         
-
+def edit_file(dst_file_name, config):
+    if dst_file_name.endswith(".tex"):
+        subprocess.call([config.get('DEFAULT', 'TEX_EDITOR'), dst_file_name])
+    elif dst_file_name.endswith(".md"):
+        subprocess.call([config.get('DEFAULT', 'MD_EDITOR'), dst_file_name])
+    else:
+        print("+ Unsupported file") # already catched by 'if dst_file_name'

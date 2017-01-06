@@ -1,7 +1,7 @@
 Fensterbrief
 ============
 
-``fensterbrief`` is a python script to organize and work with LaTeX-based letters.
+``fensterbrief`` is a python script to organize and work with LaTeX and markdown based letters.
 
 ----
 
@@ -9,12 +9,25 @@ Short introduction
 ==================
 
 ``fensterbrief`` (German for window envelope) is a helper script to manage the creation
-and archival of LaTeX-based letters. It helps you in managing a folders in a structured
+and archival of LaTeX-based and Markdown-based letters. It helps you in managing a folders in a structured
 way and to name files in a consistent way. It helps in creating new letters based on
 old ones. It tries to make letter writing easy witout adding over-specialised functionality.
 
 ``fensterbrief`` does not process metadata beyond file and directory names. It is not a
 LaTeX editor.
+
+While ``fensterbrief`` is more or less OS independent, it currently only supports
+Unix-style environments.
+
+
+Features
+--------
+
+* intended to be used via command line
+* maintaining a folder and document structure
+* support for LaTex and Markdown based letters
+* support for fax transmissions via simple-fax.de
+* support for buying postage for the Deutsche Post
 
 
 Usage
