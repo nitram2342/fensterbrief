@@ -4,6 +4,8 @@
 \RequirePackage{geometry}
 \geometry{top=47mm,right=20mm,bottom=27mm,left=20mm}
 
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
 
 \KOMAoptions{enlargefirstpage=on}
 \KOMAoptions{parskip=half}
