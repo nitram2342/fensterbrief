@@ -173,7 +173,7 @@ def main():
         fensterbrief.list_letters(root_dir)
 
     elif options.search:
-        fensterbrief.list_letters(root_dir, options.search, root_dir)
+        fensterbrief.list_letters(root_dir, options.search)
 
     elif options.set_folder:
         print("+ Set working folder to %s" % options.set_folder)
