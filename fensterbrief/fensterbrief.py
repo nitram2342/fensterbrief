@@ -119,17 +119,17 @@ def adopt(doc_root, src_file, keep_folder=False):
     else:
         print("+ Unkown file suffix in %s. Can't process file." % src_file)
         return None
-    
+
+    # check source file name
+    if not src_file.startswith("/"):
+        src_file = os.path.join(doc_root, src_file)
+
     if keep_folder:        
         dst_folder_path = os.path.dirname(src_file)
     else:
         foldername = request_folder(recipient_name)
         dst_folder_path = create_folder(doc_root, foldername)
-    
-    # check source file name
-    if not src_file.startswith("/"):
-        src_file = os.path.join(doc_root, src_file)
-         
+             
     # copy file
     dst_file_path = os.path.join(dst_folder_path, new_filename)
     print("+ Copy file %s to %s" % (src_file, dst_file_path))
