@@ -192,7 +192,7 @@ def main():
                 f = frank.frank(config)
                 f.buy_stamp(os.path.dirname(dst_file_name), options.buy_stamp)
 
-            edit_file(dst_file_name, config)
+            fensterbrief.edit_file(dst_file_name, config)
             
     elif options.buy_stamp: # after adopt
         working_ref = fensterbrief.load_working_ref(root_dir)

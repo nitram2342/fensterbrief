@@ -1,14 +1,14 @@
 ---
-to:
-- Erika Mustermann
-- Heidestraße 17
-- 51147 Köln
 subject: Lorem Ipsum
-opening: Sehr geehrte Frau Mustermann,
+opening': Sehr geehrte Frau Mustermann,
 closing: Mit freundlichen Grüßen
 my_ref: RG2342
 your_ref: 42
 customer: 1000
+to:
+- Erika Mustermann
+- Heidestraße 17
+- 51147 Köln
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod

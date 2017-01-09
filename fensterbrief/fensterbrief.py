@@ -10,6 +10,7 @@ from datetime import date
 from slugify import slugify
 import shutil
 import subprocess
+import yaml
 
 working_object_file = '.working_object.conf'
 
@@ -80,13 +81,13 @@ def request_file(recipient_name, filetype="tex"):
     letter_subject = slugify(input("+ Letter subject: "), separator="_")
     filename = "%s_%s-%s.%s" % (date.today().isoformat(), \
                                 recipient_name, letter_subject, filetype)
-    return filename
+    return [filename, letter_subject]
 
 
 def request_file_and_folder(recipient_name, filetype="tex"):
     recipient_name = request_recipient()
     foldername = request_folder(recipient_name)
-    filename = request_file(recipient_name, filetype)
+    filename, subject = request_file(recipient_name, filetype)
     
     return [foldername, filename]
 
@@ -112,9 +113,9 @@ def adopt(doc_root, src_file, keep_folder=False):
     recipient_name = request_recipient()
 
     if src_file.endswith(".tex"):
-        new_filename = request_file(recipient_name, 'tex')
+        new_filename, subject = request_file(recipient_name, 'tex')
     elif src_file.endswith(".md"):
-        new_filename = request_file(recipient_name, 'md')
+        new_filename, subject = request_file(recipient_name, 'md')
     else:
         print("+ Unkown file suffix in %s. Can't process file." % src_file)
         return None
@@ -132,7 +133,10 @@ def adopt(doc_root, src_file, keep_folder=False):
     # copy file
     dst_file_path = os.path.join(dst_folder_path, new_filename)
     print("+ Copy file %s to %s" % (src_file, dst_file_path))
-    shutil.copyfile(src_file,  dst_file_path)
+    if dst_file_path.endswith(".tex"):
+        shutil.copyfile(src_file,  dst_file_path)
+    else:
+        copy_and_adjust_md(src_file,  dst_file_path, { 'subject' : subject })
 
 
     # store referene to working dir
@@ -140,6 +144,24 @@ def adopt(doc_root, src_file, keep_folder=False):
     
     return dst_file_path
 
+def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
+
+    with open(src_file) as fin:
+        with open(dst_file, 'w') as fout:
+            
+            for line in fin.readlines():
+                changed = False              
+                yaml_data = yaml.load(line)
+                
+                if yaml_data:
+                    for k in replace_data:
+                        if k in yaml_data:
+                            yaml_data[k] = replace_data[k]
+                            fout.write(yaml.dump(yaml_data, default_flow_style=False))
+                            changed = True
+                if not changed:
+                    fout.write(line)
+            
         
 def edit_file(dst_file_name, config):
     if dst_file_name.endswith(".tex"):
