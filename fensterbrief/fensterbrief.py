@@ -12,7 +12,6 @@ import shutil
 import subprocess
 import re
 import googlemaps
-import pprint
 
 working_object_file = '.working_object.conf'
 
