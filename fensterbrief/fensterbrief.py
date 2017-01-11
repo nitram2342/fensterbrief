@@ -10,7 +10,6 @@ from datetime import date
 from slugify import slugify
 import shutil
 import subprocess
-import yaml
 import re
 import googlemaps
 import pprint
