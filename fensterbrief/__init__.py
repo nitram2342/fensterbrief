@@ -88,7 +88,14 @@ def init_config_file():
 
     return config
 
-
+def init_google(config):
+    print("+ In order to use the Google address lookup, we need a Google API key. You can request an API \n" +
+          "  key from https://developers.google.com/maps/documentation/javascript/get-api-key .\n" +
+          "  Sometimes you find API keys on github: \n" +
+          "  https://github.com/search?o=desc&q=google+maps+api+key&ref=searchresults&s=indexed&type=Code")
+    api_key = input("+ Your Google API key                                   : ")
+    config['google']['api_key'] = api_key
+    
 def init_pandoc(config):
     config['pandoc']['program'] = 'pandoc'
     config['pandoc']['template'] = '${template_dir}/template-pandoc.tex'    
@@ -98,6 +105,7 @@ def init_modules(config):
     password =  input("+ Your password for simple-fax.de                       : ")
             
     init_pandoc(config)
+    init_google(config)
     mail_to_simple_fax_de.init_config(config)
     soap_to_simple_fax_de.init_config(config, mail_from, password)
     frank.init_config(config)
@@ -122,6 +130,7 @@ def main():
     parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
     parser.add_argument('--buy-stamp', help='Buy a stamp. Place postage file in current folder or use together with --adopt.', nargs='?', metavar='PRODUCT_ID', const='1')
 
+    parser.add_argument('--lookup-address', help='Search for an address via Gogle', metavar='STRING')    
     parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')   
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
@@ -185,8 +194,13 @@ def main():
         dst_folder_path = fensterbrief.create_folder(root_dir, foldername)
 
     elif options.adopt:
-        dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder)
+        address = None
+        if options.lookup_address:
+            address = fensterbrief.lookup_address(options.lookup_address, config)
 
+        dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder, address)
+
+            
         if dst_file_name:
             if options.buy_stamp:
                 f = frank.frank(config)

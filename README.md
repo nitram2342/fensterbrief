@@ -28,6 +28,7 @@ Features
 * support for LaTeX and Markdown based letters
 * support for fax transmissions via simple-fax.de
 * support for buying postage for the Deutsche Post
+* lookup postal addresses via the Google API
 
 
 Usage
@@ -35,25 +36,22 @@ Usage
 
 The ``fensterbrief`` tool is command line based:
 ```
-usage: fensterbrief [-h] [--config FILE] [--list-templates] [--list-letters]
-                    [--create-folder] [--search STRING] [--adopt FILE]
-                    [--init] [--keep-folder] [--verbose] [--edit] [--render]
+usage: fensterbrief [-h] [--list-templates] [--list-letters] [--search STRING]
+                    [--create-folder] [--adopt FILE] [--edit] [--render]
                     [--set-folder DIR] [--mail-simple-fax DEST]
                     [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
+                    [--lookup-address STRING] [--keep-folder] [--config FILE]
+                    [--verbose] [--init]
 
 A command line tool to prepare letters
 
 optional arguments:
   -h, --help            show this help message and exit
-  --config FILE         The configuration file to use
   --list-templates      List all letter templates
   --list-letters        List all letters
-  --create-folder       Ask for meta data and create a new folder
   --search STRING       Search for a string in filenames
+  --create-folder       Ask for meta data and create a new folder
   --adopt FILE          Create a new letter based on a previous one
-  --init                Initialize the environment
-  --keep-folder         Store the adopted letter in the same folder
-  --verbose             Show what is going on
   --edit                Edit the current letter source file
   --render              Render PDF file from current markdown or latex
   --set-folder DIR      Set the working folder
@@ -65,6 +63,12 @@ optional arguments:
   --buy-stamp [PRODUCT_ID]
                         Buy a stamp. Place postage file in current folder or
                         use together with --adopt.
+  --lookup-address STRING
+                        Search for an address via Gogle
+  --keep-folder         Store the adopted letter in the same folder
+  --config FILE         The configuration file to use
+  --verbose             Show what is going on
+  --init                Initialize the environment
 
 ```
 
@@ -175,6 +179,17 @@ Buying postage for the current letter:
 ```
 The later approach works, because ``Fensterbrief`` stores the path and filenames of the current folder and letter.
 
+Lookup an address
+-----------------
+
+When adopting a Markdown-based letter, you can lookup a postal address via Google and the address is used in the letter as destination address:
+```
+$ fensterbrief --adopt _templates/template-pandoc.md --keep-folder --lookup-address 'rathaus mitte, berlin'
+```
+
+If there are multiple matches, a list of matches is shown and you select an index.
+
+This operation requires a Google API key.
      
 Installation
 ==================
@@ -196,7 +211,7 @@ Setup the environment
 
 After installing the tool, the configuration file must be created. A wizzard mode asks for certain
 configuration points as shown below.
-```   
+```
     $ fensterbrief --init
     + Root directory, where letters should be stored: /home/martin/Documents/Vorgaenge/
     + Template directory, where template letters are stored: ${ROOT_DIR}/_templates/
@@ -205,7 +220,7 @@ configuration points as shown below.
     + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/briefvorlage.lco
     + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/template-widerspruch-datennutzung-nach-werbung.tex
     [...]
-```		    
+```
 It is possible to use text makros such as the ``${ROOT_DIR}``.
 
 Customize templates
@@ -231,12 +246,14 @@ Example configuration file ``~/.fensterbrief.conf``:
   root_dir = /home/martin/Documents/Vorgaenge/
   template_dir = ${ROOT_DIR}/_templates/
   tex_editor = texmaker
-  md_editor = emacs
+  md_editor = emacs -nw
 
   [pandoc]
   program = pandoc
   template = ${template_dir}/template-pandoc.tex
 
+  [google]
+  api_key = xxxx
 
   [mail_to_simple_fax_de]
   mail_client = thunderbird
@@ -266,6 +283,15 @@ Create a signature file
 Sometimes it is useful to have a digital version of one's signature to include it in a letter, when it is sent as fax via an Internet service. This is more convinient than printing a letter, placing a signature, scan it as PDF file.
 
 A step-by-step guide to achieve this is describe in a [stackoverflow article](https://tex.stackexchange.com/questions/32911/adding-a-signature-on-an-online-job-application/32940#32940).
+
+Obtain a Google API key
+-----------------------
+
+You need a Google API key in order to use this feature. You can get an API key from [Google][https://developers.google.com/maps/documentation/javascript/get-api-key], which requires a Google account.
+
+It may also be possible to find API keys at [Github][https://github.com/search?o=desc&q=google+maps+api+key&ref=searchresults&s=indexed&type=Code]
+
+
 
 Copyright and Licence
 ---------------------

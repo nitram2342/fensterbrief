@@ -11,6 +11,9 @@ from slugify import slugify
 import shutil
 import subprocess
 import yaml
+import re
+import googlemaps
+import pprint
 
 working_object_file = '.working_object.conf'
 
@@ -108,7 +111,7 @@ def create_folder(doc_root, foldername):
     return dst_folder_path
 
 
-def adopt(doc_root, src_file, keep_folder=False):
+def adopt(doc_root, src_file, keep_folder=False, address=None):
 
     recipient_name = request_recipient()
 
@@ -136,7 +139,8 @@ def adopt(doc_root, src_file, keep_folder=False):
     if dst_file_path.endswith(".tex"):
         shutil.copyfile(src_file,  dst_file_path)
     else:
-        copy_and_adjust_md(src_file,  dst_file_path, { 'subject' : subject })
+        copy_and_adjust_md(src_file,  dst_file_path, { 'subject' : subject,
+                                                       'to' : address})
 
 
     # store referene to working dir
@@ -144,29 +148,135 @@ def adopt(doc_root, src_file, keep_folder=False):
     
     return dst_file_path
 
+
 def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
 
+    # Regexps taken from
+    # https://github.com/waylan/Python-Markdown/blob/master/markdown/extensions/meta.py
+    # that is also under a BSD licence
+    
+    META_RE = re.compile(r'^[ ]{0,3}(?P<key>[A-Za-z0-9_-]+):\s*(?P<value>.*)')
+    META_MORE_RE = re.compile(r'^[ ]{4,}(?P<value>.*)')
+    END_RE = re.compile(r'^(-{3}|\.{3})(\s.*)?')
+
+    meta = {}
+    just_copy_line = False
+    key = None
+    
     with open(src_file) as fin:
         with open(dst_file, 'w') as fout:
             
             for line in fin.readlines():
-                changed = False              
-                yaml_data = yaml.load(line)
-                
-                if yaml_data:
-                    for k in replace_data:
-                        if k in yaml_data:
-                            yaml_data[k] = replace_data[k]
-                            fout.write(yaml.dump(yaml_data, default_flow_style=False))
-                            changed = True
-                if not changed:
+
+                if just_copy_line:
                     fout.write(line)
-            
+                else:
+                    
+                    m1 = META_RE.match(line)
+                    if m1:
+
+                        key = m1.group('key').lower().strip()
+                        value = m1.group('value').strip()
+
+                        if key in meta:
+                            meta[key].append(value)
+                        else:
+                            meta[key] = [value]
+
+                            
+                    elif END_RE.match(line) and key != None:
+                        
+                        just_copy_line = True
+                        #print(replace_data)
+                        #print(meta)
+                        
+                        # replace data
+                        for k in replace_data:
+                            if k in meta:
+                                meta[k] = replace_data[k]
+                             
+                        # dump yaml data
+                        for k in meta:
+                            if isinstance(meta[k], list):
+                                if len(meta[k]) == 1:
+                                    fout.write("%s: %s\n" % (k, meta[k][0]))
+                                else:
+                                    fout.write("%s:\n" % k)                             
+                                    for l in meta[k]:
+                                        fout.write("    %s\n" % l)
+                            else:
+                                fout.write("%s: %s\n" % (k, meta[k]))
+
+                        fout.write(line)
+
+                    elif META_MORE_RE.match(line):
+                        m2 = META_MORE_RE.match(line)
+                        if m2 and key:
+                         
+                            # Add another line to existing key
+                            meta[key].append(m2.group('value').strip())
+                         
+                    else:
+                        fout.write(line)
+
         
 def edit_file(dst_file_name, config):
+    key = None    
     if dst_file_name.endswith(".tex"):
-        subprocess.call([config.get('DEFAULT', 'TEX_EDITOR'), dst_file_name])
+        key = 'TEX_EDITOR'
     elif dst_file_name.endswith(".md"):
-        subprocess.call([config.get('DEFAULT', 'MD_EDITOR'), dst_file_name])
+        key = 'MD_EDITOR'
     else:
         print("+ Unsupported file") # already catched by 'if dst_file_name'
+        return 
+
+    subprocess.call( config.get('DEFAULT', key).split() + [dst_file_name])
+                
+
+def gmaps_lookup_address(keyword, api_key):
+    gm = googlemaps.Client(key=api_key)
+    result = gm.places(keyword)
+
+    hits = None
+    
+    if result and ('status' in result) and result['status'] == 'OK':
+        hits = []
+        for r in result['results']:
+            print(r['name'])
+            print(r['formatted_address'])
+            hits.append([r['name']] + r['formatted_address'].split(', '))
+
+    return hits
+
+
+
+def print_address_lookup_hits(results, idx=None):
+    counter = 0
+    for i in results:
+
+        if idx == None or (idx != None and counter == idx):
+            print("+ #%d" % counter)
+        
+            for l in i:
+                print("\t%s" % l)
+
+        counter += 1
+        
+    
+def lookup_address(keyword, config):
+    
+    hits = gmaps_lookup_address(keyword, config['google']['api_key'])
+    if hits == None:
+        print("+ An error occured.")
+        return None
+    else:
+        print("+ Matches:")
+        print_address_lookup_hits(hits)
+        if len(hits) > 1:
+            idx = int(input("Please select address: "))
+            print_address_lookup_hits(hits, idx)
+        else:
+            idx = 0
+            
+        return hits[idx]
+    
