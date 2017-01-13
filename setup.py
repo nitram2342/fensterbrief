@@ -25,7 +25,6 @@ setup(
 
     # The project's main homepage.
     url='https://github.com/nitram2342/fensterbrief',
-    download_url='https://github.com/nitram2342/fensterbrief/tarball/0.0.5',
     
     # Author details
     author='Martin Schobert',
