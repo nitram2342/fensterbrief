@@ -1,4 +1,4 @@
-Fensterbrief
+fensterbrief
 ============
 
 ``fensterbrief`` is a python script to organize and work with LaTeX and
@@ -120,7 +120,7 @@ difference, whether you adopt an old letter or a template file.
          + Creating folder /home/martin/Documents/Vorgaenge/2016-12_company_X-Klarung_Situation_X
          + Copy file /home/martin/Documents/Vorgaenge/2014-09-company_X-guthabenerstattung/2014-09-29-company_X-guthabenerstattung.tex to /home/martin/Documents/Vorgaenge/2016-12_company_X-Klarung_Situation_X/2016-12-14_company_X-Klarung_Situation_X.tex
 
-Afterwards, the Fensterbrief script will launch the LaTeX editor that
+Afterwards, the fensterbrief script will launch the LaTeX editor that
 has been configured. Since LaTeX editors usually support a build-in
 function for rendering and printing, there are no further steps relevant
 here. If you use a editor that does not support rendering, you can
@@ -165,7 +165,7 @@ editor again:
 
          $ fensterbrief --edit
 
-To render PDF files from Markdown via LaTeX, ``Fensterbrief`` uses
+To render PDF files from Markdown via LaTeX, ``fensterbrief`` uses
 `pandoc <https://pandoc.org/>`__ with this LaTeX template:
 
 `LaTeX letter template used as pandoc
@@ -208,7 +208,7 @@ address instead of using just an ordinary e-mail address.
 Buying postage
 --------------
 
-``Fensterbrief`` uses the tool
+``fensterbrief`` uses the tool
 `frank <https://github.com/gsauthof/frank>`__ to buy stamps for the
 Deutsche Post. These stamps are named "Internetmarke" or "1C4A" for
 "1Click4Applikation". Once, ``frank`` is set up, you can buy stamps in
@@ -226,7 +226,7 @@ Buying postage for the current letter:
 
          $ fensterbrief --buy-stamp
 
-The later approach works, because ``Fensterbrief`` stores the path and
+The later approach works, because ``fensterbrief`` stores the path and
 filenames of the current folder and letter.
 
 Lookup an address
@@ -250,18 +250,17 @@ Installation
 Technical installation of the tool itself
 -----------------------------------------
 
-Clone the repository:
+Install dependencies:
 
 ::
 
-        $ git clone https://github.com/nitram2342/fensterbrief.git
+        $ sudo apt-get install texlive pandoc
 
-Install the program:
+Install ``fensterbrief``:
 
 ::
 
-        $ cd fensterbrief/
-        $ sudo python3 setup.py install
+        $ sudo pip install fensterbrief
 
 Setup the environment
 ---------------------
@@ -341,7 +340,7 @@ Example configuration file ``~/.fensterbrief.conf``:
 Setup ``frank`` to buy stamps
 -----------------------------
 
-``Fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is
+``fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is
 based on the python module
 `python-inema <https://pypi.python.org/pypi/inema>`__.
 
@@ -375,6 +374,6 @@ It may also be possible to find API keys at
 Copyright and Licence
 =====================
 
-``Fensterbrief`` is developed by Martin Schobert martin@schobert.cc and
+``fensterbrief`` is developed by Martin Schobert martin@schobert.cc and
 published under a BSD licence with a non-military clause. Please read
 ``LICENSE.txt`` for further details.
