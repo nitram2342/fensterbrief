@@ -4,7 +4,6 @@ Fensterbrief
 ``fensterbrief`` is a python script to organize and work with LaTeX and
 markdown based letters.
 
---------------
 
 Short introduction
 ==================
@@ -330,12 +329,10 @@ Example configuration file ``~/.fensterbrief.conf``:
       [mail_to_simple_fax_de]
       mail_client = thunderbird
       mail_from = id3
-
       
       [soap_to_simple_fax_de]
       user = foo@example.com
       password = secret
-
       
       [frank]
       program = /home/martin/Development/frank/frank.py
@@ -376,7 +373,7 @@ It may also be possible to find API keys at
 `Github <https://github.com/search?o=desc&q=google+maps+api+key&ref=searchresults&s=indexed&type=Code>`__
 
 Copyright and Licence
----------------------
+=====================
 
 ``Fensterbrief`` is developed by Martin Schobert martin@schobert.cc and
 published under a BSD licence with a non-military clause. Please read
