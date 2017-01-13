@@ -18,14 +18,14 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.4',
+    version='0.0.5',
 
     description='Fensterbrief is a python script to organize and work with LaTeX and Markdown based letters.',
     long_description=long_description,
 
     # The project's main homepage.
     url='https://github.com/nitram2342/fensterbrief',
-    download_url='https://github.com/nitram2342/fensterbrief/tarball/0.0.2',
+    download_url='https://github.com/nitram2342/fensterbrief/tarball/0.0.5',
     
     # Author details
     author='Martin Schobert',
