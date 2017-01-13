@@ -351,7 +351,7 @@ based on the python module
 Setting up ``frank`` is a bit complex, because it requires manual
 interactions aka. sending mails to the system operator. To use frank,
 please refer to the instructions on the `github page of
-`frank <https://github.com/gsauthof/frank>`__.
+frank <https://github.com/gsauthof/frank>`__.
 
 Create a signature file
 -----------------------
