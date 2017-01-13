@@ -210,7 +210,7 @@ Buying postage
 --------------
 
 ``Fensterbrief`` uses the tool
-`frank <https://github.com/gsauthof/frank>`_ to buy stamps for the
+`frank <https://github.com/gsauthof/frank>`__ to buy stamps for the
 Deutsche Post. These stamps are named "Internetmarke" or "1C4A" for
 "1Click4Applikation". Once, ``frank`` is set up, you can buy stamps in
 two modes.
@@ -346,12 +346,12 @@ Setup ``frank`` to buy stamps
 
 ``Fensterbrief`` uses the tool ``frank`` to buy stamps, which itself is
 based on the python module
-`python-inema <https://pypi.python.org/pypi/inema>`_.
+`python-inema <https://pypi.python.org/pypi/inema>`__.
 
 Setting up ``frank`` is a bit complex, because it requires manual
 interactions aka. sending mails to the system operator. To use frank,
 please refer to the instructions on the `github page of
-`frank <https://github.com/gsauthof/frank>`_.
+`frank <https://github.com/gsauthof/frank>`__.
 
 Create a signature file
 -----------------------
@@ -362,18 +362,18 @@ This is more convinient than printing a letter, placing a signature,
 scan it as PDF file.
 
 A step-by-step guide to achieve this is describe in a `stackoverflow
-article <https://tex.stackexchange.com/questions/32911/adding-a-signature-on-an-online-job-application/32940#32940>`_.
+article <https://tex.stackexchange.com/questions/32911/adding-a-signature-on-an-online-job-application/32940#32940>`__.
 
 Obtain a Google API key
 -----------------------
 
 You need a Google API key in order to use this feature. You can get an
 API key from
-`Google<https://developers.google.com/maps/documentation/javascript/get-api-key>`_,
+`Google <https://developers.google.com/maps/documentation/javascript/get-api-key>`__,
 which requires a Google account.
 
 It may also be possible to find API keys at
-`Github<https://github.com/search?o=desc&q=google+maps+api+key&ref=searchresults&s=indexed&type=Code>`_
+`Github <https://github.com/search?o=desc&q=google+maps+api+key&ref=searchresults&s=indexed&type=Code>`__
 
 Copyright and Licence
 ---------------------
