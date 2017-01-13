@@ -9,8 +9,13 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:  
     long_description = f.read()
+    try:
+        import pypandoc
+        long_description = pypandoc.convert(long_description, 'rst')
+    except(IOError, ImportError):
+        pass
 
 setup(
     name='fensterbrief',
@@ -18,14 +23,15 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.1',
+    version='0.0.3',
 
     description='Fensterbrief is a python script to organize and work with LaTeX and Markdown based letters.',
     long_description=long_description,
 
     # The project's main homepage.
     url='https://github.com/nitram2342/fensterbrief',
-
+    download_url='https://github.com/nitram2342/fensterbrief/tarball/0.0.2',
+    
     # Author details
     author='Martin Schobert',
     author_email='martin@weltregierung.de',
@@ -42,8 +48,12 @@ setup(
         'Development Status :: 3 - Alpha',
 
         # Indicate who your project is intended for
-        'Intended Audience :: LaTeX users',
-        'Topic :: Productivity :: Office',
+        'Intended Audience :: End Users/Desktop',
+
+        'Topic :: Office/Business',
+        'Topic :: Text Processing :: Markup :: LaTeX',
+        'Topic :: Utilities',
+        'Topic :: Communications :: Fax',
 
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: BSD License',
