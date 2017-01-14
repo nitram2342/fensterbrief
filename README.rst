@@ -145,7 +145,7 @@ Adopting a Markdown letter isn't much different from creating a
 LaTeX-based letter. The source file of a Markdown-based letter looks
 like this:
 
-`Sample Markdown letter <./templates/template-pandoc.md>`__
+`Sample Markdown letter <https://github.com/nitram2342/fensterbrief/templates/template-pandoc.md>`__
 
 Usually, you likely use a more general editor that may not support
 LaTeX/pandoc directly. Therefore, you may want to render your letters
@@ -169,7 +169,7 @@ To render PDF files from Markdown via LaTeX, ``fensterbrief`` uses
 `pandoc <https://pandoc.org/>`__ with this LaTeX template:
 
 `LaTeX letter template used as pandoc
-template <./templates/template-pandoc.tex>`__
+template <https://github.com/nitram2342/fensterbrief/templates/template-pandoc.tex>`__
 
 Sending a letter
 ----------------
@@ -294,12 +294,12 @@ template examples on the Internet, which you can adjust to your needs.
 My templates look like this:
 
 -  `Rendered standard letter
-   template <./templates/template-standard-letter.pdf>`__
+   template <https://github.com/nitram2342/fensterbrief/templates/template-standard-letter.pdf>`__
 -  `Rendered standard invoice
-   template <./templates/template-invoice.pdf>`__
+   template <https://github.com/nitram2342/fensterbrief/templates/template-invoice.pdf>`__
 -  `Rendered standard letter template for defeating advertising and
    personal data
-   usage <./templates/template-widerspruch-datennutzung-nach-werbung.pdf>`__
+   usage <https://github.com/nitram2342/fensterbrief/templates/template-widerspruch-datennutzung-nach-werbung.pdf>`__
 
 When running ``--init``, ``.lco`` files are copied to the
 ``~/texmf/tex/latex/fensterbrief/`` directory and ``texhash`` is run
