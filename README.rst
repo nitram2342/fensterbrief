@@ -254,7 +254,8 @@ Install dependencies:
 
 ::
 
-        $ sudo apt-get install texlive pandoc
+        $ sudo apt-get install texlive texlive-lang-german pandoc \
+	    python3-pip
 
 Install ``fensterbrief``:
 

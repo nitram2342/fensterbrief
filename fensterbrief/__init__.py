@@ -12,11 +12,13 @@ import os
 import sys
 import shutil
 from fensterbrief import fensterbrief
-from fensterbrief.transmission.simple_fax_de.mail_to_simple_fax_de import mail_to_simple_fax_de
-from fensterbrief.transmission.simple_fax_de.soap_to_simple_fax_de import soap_to_simple_fax_de
+from fensterbrief.transmission.simple_fax_de import mail_to_simple_fax_de
+from fensterbrief.transmission.simple_fax_de import soap_to_simple_fax_de
 from fensterbrief.stamps.frank import frank
 
 from pkg_resources import resource_stream, resource_listdir
+
+
 
 def init_templates(config_file):
 
@@ -71,44 +73,53 @@ def init_templates(config_file):
 
                     
     
-def init_config_file():
+def init_config_file(old_config):
     
     # create a config file
     config = configparser.RawConfigParser()
 
-    root_dir =     input("+ Root directory, where letters should be stored        : ")
-    template_dir = input("+ Template directory, where template letters are stored : ")
-    tex_editor =   input("+ Your preferred LaTeX editor                           : ")
-    md_editor =    input("+ Your preferred Markdown editor                        : ")
+    fensterbrief.prompt("Root directory, where letters should be stored",
+                        os.path.expanduser("~/Documents/letters/"),
+                        config, old_config, "DEFAULT", "ROOT_DIR")
 
-    config['DEFAULT']['ROOT_DIR'] = root_dir
-    config['DEFAULT']['TEMPLATE_DIR'] = template_dir
-    config['DEFAULT']['TEX_EDITOR'] = tex_editor
-    config['DEFAULT']['MD_EDITOR'] = md_editor
+    fensterbrief.prompt("Template directory, where template letters are stored",
+                        "${ROOT_DIR}/_templates/",
+                        config, old_config, "DEFAULT", "TEMPLATE_DIR")
+                   
+    fensterbrief.prompt("Your preferred LaTeX editor",
+                        "texmaker", config, old_config, "DEFAULT", "TEX_EDITOR")
+
+    fensterbrief.prompt("Your preferred Markdown editor",
+                        "emacs -nw", config, old_config, "DEFAULT", "MD_EDITOR")
 
     return config
 
-def init_google(config):
-    print("+ In order to use the Google address lookup, we need a Google API key. You can request an API \n" +
-          "  key from https://developers.google.com/maps/documentation/javascript/get-api-key .\n" +
-          "  Sometimes you find API keys on github: \n" +
-          "  https://github.com/search?o=desc&q=google+maps+api+key&ref=searchresults&s=indexed&type=Code")
-    api_key = input("+ Your Google API key                                   : ")
-    config['google']['api_key'] = api_key
-    
-def init_pandoc(config):
-    config['pandoc']['program'] = 'pandoc'
-    config['pandoc']['template'] = '${template_dir}/template-pandoc.tex'    
+def init_google(config, old_config):
 
-def init_modules(config):
-    mail_from = input("+ Your e-mail address for simple-fax.de                 : ")
-    password =  input("+ Your password for simple-fax.de                       : ")
-            
-    init_pandoc(config)
-    init_google(config)
-    mail_to_simple_fax_de.init_config(config)
-    soap_to_simple_fax_de.init_config(config, mail_from, password)
-    frank.init_config(config)
+    fensterbrief.prompt("In order to use the Google address lookup, we need a Google API key. \n" +
+                        "  You can request an API key from: \n" +
+                        "  https://developers.google.com/maps/documentation/javascript/get-api-key\n" +
+                        "  Sometimes you find API keys on github: \n" +
+                        "  https://github.com/search?o=desc&q=google+maps+api+key&ref=searchresults&s=indexed&type=Code",
+                        None, config, old_config, 'google', 'api_key')
+    
+def init_pandoc(config, old_config):
+
+    fensterbrief.prompt("The pandoc program",
+                        "pandoc", config, old_config, "pandoc", "program")
+
+    fensterbrief.prompt("The standard LaTeX template when rendering markdown",
+                        "${template_dir}/template-pandoc.tex",
+                        config, old_config, "pandoc", "template")
+
+def init_modules(config, old_config):
+
+    init_pandoc(config, old_config)
+    init_google(config, old_config)
+
+    mail_to_simple_fax_de.init_config(config, old_config)
+    soap_to_simple_fax_de.init_config(config, old_config)
+    frank.init_config(config, old_config)
     
 
 def main():
@@ -140,17 +151,23 @@ def main():
 
     if options.init:
 
-        if not os.path.exists(config_file):
+        old_config = None
+        
+        if os.path.exists(config_file):
 
-            config = init_config_file()
-            init_modules(config)
+            old_config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
+            old_config.read([config_file])
 
-            with open(config_file, 'w') as cf_handle:
-                print("+ Writing configuration file %s. You may want to edit this file later for further configuration." % config_file)
-                config.write(cf_handle)
-                os.chmod(config_file, 0o600)
+        
+        config = init_config_file(old_config)
+        init_modules(config, old_config)
 
-            init_templates(config_file)            
+        with open(config_file, 'w') as cf_handle:
+            print("+ Writing configuration file %s. You may want to edit this file later for further configuration." % config_file)
+            config.write(cf_handle)
+            os.chmod(config_file, 0o600)
+
+        init_templates(config_file)            
                 
         return
 
@@ -241,9 +258,9 @@ def main():
     elif options.mail_simple_fax or options.soap_simple_fax:
       
         if options.mail_simple_fax:
-            trans = mail_to_simple_fax_de(config)
+            trans = mail_to_simple_fax_de.mail_to_simple_fax_de(config)
         else:
-            trans = soap_to_simple_fax_de(config)
+            trans = soap_to_simple_fax_de.soap_to_simple_fax_de(config)
 
         working_ref = fensterbrief.load_working_ref(root_dir)
         pdf_file = os.path.join(root_dir, working_ref['dir'], working_ref['pdf'])

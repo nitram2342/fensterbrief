@@ -15,6 +15,46 @@ import googlemaps
 
 working_object_file = '.working_object.conf'
 
+def prompt(headline, default, new_config, old_config, config_section, config_key):
+
+    print("+ %s" % headline)
+    print("  ---------------------------------------------------------------")
+    if default:
+        print("  Default value: %s" % default)
+
+    if old_config:
+        print("  Current value: %s" % old_config.get(config_section, config_key))
+        if default:
+            print("  Enter: keep current configuration, 'd': use default configuration")
+        else:
+            print("  Enter: keep current configuration")
+    elif default:
+        print("  Enter: use default configuration")
+    else:
+        print("  Enter: leave empty")
+        
+    result = input("  > ")
+
+    if result == "":
+        if old_config:
+            result = old_config.get(config_section, config_key)
+        elif default:
+            result = default
+        else:
+            result = None
+    elif result == "d" and default:
+        result = default
+    else:
+        result = None
+
+    print("+ Use value: %s\n" % result)
+
+    if config_section not in new_config:
+        new_config[config_section] = {}
+        
+    new_config.set(config_section, config_key, result)
+
+    
 def list_templates(dir_name, rel_dir):
     print("+ Looking up templates in %s" % dir_name)
     list_files(dir_name, None, rel_dir)
@@ -79,10 +119,11 @@ def request_folder(recipient_name):
 
 
 def request_file(recipient_name, filetype="tex"):
-    letter_subject = slugify(input("+ Letter subject: "), separator="_")
+    letter_subject_raw = input("+ Letter subject: ")
+    letter_subject = slugify(letter_subject_raw, separator="_")
     filename = "%s_%s-%s.%s" % (date.today().isoformat(), \
                                 recipient_name, letter_subject, filetype)
-    return [filename, letter_subject]
+    return [filename, letter_subject_raw]
 
 
 def request_file_and_folder(recipient_name, filetype="tex"):

@@ -8,6 +8,8 @@ import base64
 import logging.config
 import configparser
 
+from fensterbrief import fensterbrief
+
 logging.config.dictConfig({
         'version': 1,
         'formatters': {
@@ -31,6 +33,17 @@ logging.config.dictConfig({
                 }
     })
 
+def init_config(config, old_config):
+
+    assert config != None
+    
+    fensterbrief.prompt("Your e-mail address for simple-fax.de",
+                        None, config, old_config, 'soap_to_simple_fax_de', 'user')
+    
+    fensterbrief.prompt("Your password for simple-fax.de (will be echoed)",
+                        None, config, old_config, 'soap_to_simple_fax_de', 'password')
+    
+
 class soap_to_simple_fax_de:
 
     WSDLFILE = 'https://longisland.simple-fax.de/soap/index.php?wsdl'
@@ -38,14 +51,6 @@ class soap_to_simple_fax_de:
     def __init__(self, config):
         self.config = config
 
-    @staticmethod
-    def init_config(config, mail_from, password):
-
-        assert config != None
-        
-        config['soap_to_simple_fax_de'] = {}
-        config['soap_to_simple_fax_de']['user'] =  mail_from
-        config['soap_to_simple_fax_de']['password'] = password
         
     def send(self, file, dst_fax_nr, subject):
 

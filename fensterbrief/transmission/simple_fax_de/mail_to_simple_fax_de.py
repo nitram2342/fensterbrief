@@ -5,21 +5,23 @@
 
 import configparser
 import subprocess
+from fensterbrief import fensterbrief
+
+def init_config(config, old_config=None):
+
+    assert config != None
+
+    fensterbrief.prompt("Your program for sending mail",
+                        'thunderbird', config, old_config, 'mail_to_simple_fax_de', 'mail_client')
+    
+    fensterbrief.prompt("Your mail identity for sending mails to simple-fax.de",
+                        'id1', config, old_config, 'mail_to_simple_fax_de', 'mail_from')
 
 class mail_to_simple_fax_de:
 
     def __init__(self, config):
         self.config = config
 
-    @staticmethod
-    def init_config(config):
-
-        assert config != None
-
-        config['mail_to_simple_fax_de'] = {}        
-        config['mail_to_simple_fax_de']['mail_client'] = 'thunderbird'
-        config['mail_to_simple_fax_de']['mail_from'] = 'id1'
-        
         
     def send(self, file, dst_fax_nr, subject):
         

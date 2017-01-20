@@ -6,19 +6,24 @@
 import configparser
 import subprocess
 
+from fensterbrief import fensterbrief
+
+def init_config(config, old_config):
+        
+    assert config != None
+    
+    fensterbrief.prompt("Your program for buying stamps via frank",
+                        "frank", config, old_config, "frank", "program")
+    
+    fensterbrief.prompt("Your standard product when buying stamps via frank",
+                        "1", config, old_config, "frank", "product")
+
+    
 class frank:
 
     def __init__(self, config):
         self.config = config
 
-    @staticmethod
-    def init_config(config):
-
-        assert config != None
-        
-        config['frank'] = {}
-        config['frank']['program'] = 'frank.py'
-        config['frank']['product'] = '1'
 
     def buy_stamp(self, out_dir, product_id=None):
         
