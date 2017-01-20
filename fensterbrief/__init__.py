@@ -16,7 +16,7 @@ from fensterbrief.transmission.simple_fax_de import mail_to_simple_fax_de
 from fensterbrief.transmission.simple_fax_de import soap_to_simple_fax_de
 from fensterbrief.stamps.frank import frank
 
-from pkg_resources import resource_stream, resource_listdir
+from pkg_resources import resource_stream, resource_listdir, get_distribution
 
 
 
@@ -146,6 +146,7 @@ def main():
     parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')   
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
     parser.add_argument('--init', help='Initialize the environment', action='store_true')
+    parser.add_argument('--version', help='Show version', action='store_true')
     
     (options, args) = parser.parse_known_args()
 
@@ -275,6 +276,9 @@ def main():
             
         print("+ Going to send file: %s" % pdf_file)
         trans.send(pdf_file, dst, working_ref['pdf'])
+
+    elif options.version:
+        print("+ Version: %s" % get_distribution("fensterbrief").version)
         
     else:
         print("+ Unknown option")
