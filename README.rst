@@ -261,7 +261,8 @@ Install ``fensterbrief``:
 
 ::
 
-        $ sudo pip install fensterbrief
+        $ sudo pip3 install fensterbrief
+	
 
 Setup the environment
 ---------------------
@@ -281,6 +282,20 @@ wizzard mode asks for certain configuration points as shown below.
         [...]
 
 It is possible to use text makros such as the ``${ROOT_DIR}``.
+
+
+Update the installation
+-----------------------
+
+To upgrade ``fensterbrief``, use the following commands:
+
+::
+
+        $ sudo pip3 install fensterbrief --upgrade
+	$ fensterbrief --init
+	
+If ``--init`` is used and there is already a configuration file, ``fensterbrief`` will ask whether you want to use the default value or existing configuration entry or a new value.
+
 
 Customize templates
 -------------------
