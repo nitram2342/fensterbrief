@@ -141,7 +141,7 @@ def main():
     parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
     parser.add_argument('--buy-stamp', help='Buy a stamp. Place postage file in current folder or use together with --adopt.', nargs='?', metavar='PRODUCT_ID', const='1')
 
-    parser.add_argument('--lookup-address', help='Search for an address via Gogle', metavar='STRING')    
+    parser.add_argument('--lookup-address', help='Search for an address via Google. Can be used together with --adopt.', metavar='STRING')    
     parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')   
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
@@ -224,6 +224,9 @@ def main():
                 f.buy_stamp(os.path.dirname(dst_file_name), options.buy_stamp)
 
             fensterbrief.edit_file(dst_file_name, config)
+
+    elif options.lookup_address:
+        fensterbrief.lookup_address(options.lookup_address, config)
             
     elif options.buy_stamp: # after adopt
         working_ref = fensterbrief.load_working_ref(root_dir)
