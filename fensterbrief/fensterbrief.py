@@ -178,8 +178,11 @@ def adopt(doc_root, src_file, keep_folder=False, address=None):
     if dst_file_path.endswith(".tex"):
         shutil.copyfile(src_file,  dst_file_path)
     else:
-        copy_and_adjust_md(src_file,  dst_file_path, { 'subject' : subject,
-                                                       'to' : address})
+        replace_data = { 'subject' : subject }
+        if address:
+            replace_data['to'] = address
+            
+        copy_and_adjust_md(src_file,  dst_file_path, replace_data)
 
 
     # store referene to working dir
@@ -194,13 +197,15 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
     # https://github.com/waylan/Python-Markdown/blob/master/markdown/extensions/meta.py
     # that is also under a BSD licence
     
-    META_RE = re.compile(r'^[ ]{0,3}(?P<key>[A-Za-z0-9_-]+):\s*(?P<value>.*)')
+    META_RE = re.compile(r'^[ ]{0,3}(?P<key>[A-Za-z0-9_-]+):\s*(?P<value>.*)\s*')
     META_MORE_RE = re.compile(r'^[ ]{4,}(?P<value>.*)')
     END_RE = re.compile(r'^(-{3}|\.{3})(\s.*)?')
 
     meta = {}
     just_copy_line = False
     key = None
+
+    print(replace_data)
     
     with open(src_file) as fin:
         with open(dst_file, 'w') as fout:
@@ -212,15 +217,28 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                 else:
                     
                     m1 = META_RE.match(line)
+                    m2 = META_MORE_RE.match(line)
+                    
                     if m1:
 
                         key = m1.group('key').lower().strip()
                         value = m1.group('value').strip()
 
-                        if key in meta:
-                            meta[key].append(value)
-                        else:
-                            meta[key] = [value]
+                        if value != '|':
+                            if key in meta:
+                                meta[key].append(value)
+                            else:
+                                meta[key] = [value]
+
+                    elif m2:
+
+                        if key:
+                            value = m2.group('value').strip()
+                            
+                            if key in meta:
+                                meta[key].append(value)
+                            else:
+                                meta[key] = [value]                                
 
                             
                     elif END_RE.match(line) and key != None:
@@ -240,20 +258,14 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                                 if len(meta[k]) == 1:
                                     fout.write("%s: %s\n" % (k, meta[k][0]))
                                 else:
-                                    fout.write("%s:\n" % k)                             
+                                    fout.write("%s: |\n" % k)                             
                                     for l in meta[k]:
-                                        fout.write("    %s\n" % l)
+                                        fout.write("    %s  \n" % l)
                             else:
                                 fout.write("%s: %s\n" % (k, meta[k]))
 
                         fout.write(line)
 
-                    elif META_MORE_RE.match(line):
-                        m2 = META_MORE_RE.match(line)
-                        if m2 and key:
-                         
-                            # Add another line to existing key
-                            meta[key].append(m2.group('value').strip())
                          
                     else:
                         fout.write(line)

@@ -19,7 +19,6 @@ from fensterbrief.stamps.frank import frank
 from pkg_resources import resource_stream, resource_listdir, get_distribution
 
 
-
 def init_templates(config_file):
 
     config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
@@ -125,6 +124,9 @@ def init_pandoc(config, old_config):
                         "${template_dir}/template-pandoc.tex",
                         config, old_config, "pandoc", "template")
 
+    if not program_exists(config.get("pandoc", "program")):
+        print("+ Error: The program 'pandoc' does not exist. Please install it before using fensterbrief.")
+    
 def init_modules(config, old_config):
 
     init_pandoc(config, old_config)
