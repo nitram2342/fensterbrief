@@ -71,7 +71,12 @@ def init_templates(config_file):
     # update
     subprocess.call(['texhash'])
 
-                    
+def check_program(program):
+    """ Returns True if a program path exists or a program was found in the $PATH environment."""
+    if shutil.which(program_name) != None or os.path.exists(program):
+        return True
+    else:
+        return False
     
 def init_config_file(old_config):
     
@@ -91,6 +96,14 @@ def init_config_file(old_config):
 
     fensterbrief.prompt("Your preferred Markdown editor",
                         "emacs -nw", config, old_config, "DEFAULT", "MD_EDITOR")
+
+
+    if not program_exists(config.get("DEFAULT", "TEX_EDITOR")):
+        print("+ Error: tex editor does not exist. Please install it before using fensterbrief.")
+
+    if not program_exists(config.get("DEFAULT", "MD_EDITOR")):
+        print("+ Error: Markdown editor does not exist. Please install it before using fensterbrief.")
+
 
     return config
 
