@@ -38,39 +38,43 @@ The ``fensterbrief`` tool is command line based:
 
 ::
 
-    usage: fensterbrief [-h] [--list-templates] [--list-letters] [--search STRING]
-                        [--create-folder] [--adopt FILE] [--edit] [--render]
-                        [--set-folder DIR] [--mail-simple-fax DEST]
-                        [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
-                        [--lookup-address STRING] [--keep-folder] [--config FILE]
-                        [--verbose] [--init]
+usage: fensterbrief [-h] [--list-templates] [--list-letters] [--search STRING]
+                    [--create-folder] [--adopt FILE] [--edit] [--render]
+                    [--set-folder DIR] [--mail-simple-fax DEST]
+                    [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
+                    [--lookup-address STRING] [--keep-folder] [--config FILE]
+                    [--verbose] [--configure] [--version]
 
-    A command line tool to prepare letters
+A command line tool to prepare letters
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      --list-templates      List all letter templates
-      --list-letters        List all letters
-      --search STRING       Search for a string in filenames
-      --create-folder       Ask for meta data and create a new folder
-      --adopt FILE          Create a new letter based on a previous one
-      --edit                Edit the current letter source file
-      --render              Render PDF file from current markdown or latex
-      --set-folder DIR      Set the working folder
-      --mail-simple-fax DEST
-                            Send a fax via simple-fax.de using the e-mail
-                            interface
-      --soap-simple-fax DEST
-                            Send a fax via simple-fax.de using the SOAP interface
-      --buy-stamp [PRODUCT_ID]
-                            Buy a stamp. Place postage file in current folder or
-                            use together with --adopt.
-      --lookup-address STRING
-                            Search for an address via Gogle
-      --keep-folder         Store the adopted letter in the same folder
-      --config FILE         The configuration file to use
-      --verbose             Show what is going on
-      --init                Initialize the environment
+optional arguments:
+  -h, --help            show this help message and exit
+  --list-templates      List all letter templates
+  --list-letters        List all letters
+  --search STRING       Search for a string in filenames
+  --create-folder       Ask for meta data and create a new folder
+  --adopt FILE          Create a new letter based on a previous one
+  --edit                Edit the current letter source file
+  --render              Render PDF file from current markdown or latex
+  --set-folder DIR      Set the working folder
+  --mail-simple-fax DEST
+                        Send a fax via simple-fax.de using the e-mail
+                        interface
+  --soap-simple-fax DEST
+                        Send a fax via simple-fax.de using the SOAP interface
+  --buy-stamp [PRODUCT_ID]
+                        Buy a stamp. Place postage file in current folder or
+                        use together with --adopt.
+  --lookup-address STRING
+                        Search for an address via Google. Can be used together
+                        with --adopt.
+  --keep-folder         Store the adopted letter in the same folder
+  --config FILE         The configuration file to use
+  --verbose             Show what is going on
+  --configure           Initialize the environment and configure the tool
+  --version             Show version
+
+
 
 List all archived letters
 -------------------------
@@ -272,16 +276,26 @@ wizzard mode asks for certain configuration points as shown below.
 
 ::
 
-        $ fensterbrief --init
-        + Root directory, where letters should be stored: /home/martin/Documents/Vorgaenge/
-        + Template directory, where template letters are stored: ${ROOT_DIR}/_templates/
-        + Root directory, where letters should be stored: texmaker
-        + Writing configuration file /home/martin/.fensterbrief.conf
-        + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/briefvorlage.lco
-        + Copy resource file to /home/martin/Documents/Vorgaenge//_templates/template-widerspruch-datennutzung-nach-werbung.tex
-        [...]
++ Root directory, where letters should be stored
+  ---------------------------------------------------------------
+  Default value: /home/martin/Documents/letters/
+  Current value: /home/martin/Documents/Vorgaenge/
+  Enter: keep current configuration, 'd': use default configuration
+  > 
++ Use value: /home/martin/Documents/Vorgaenge/
+
++ Template directory, where template letters are stored
+  ---------------------------------------------------------------
+  Default value: ${ROOT_DIR}/_templates/
+  Current value: /home/martin/Documents/Vorgaenge//_templates/
+  Enter: keep current configuration, 'd': use default configuration
+  > d
++ Use value: ${ROOT_DIR}/_templates/
+
+  [...]
 
 It is possible to use text makros such as the ``${ROOT_DIR}``.
+
 
 
 Update the installation
@@ -292,9 +306,9 @@ To upgrade ``fensterbrief``, use the following commands:
 ::
 
         $ sudo pip3 install fensterbrief --upgrade
-	$ fensterbrief --init
+	$ fensterbrief --configure
 	
-If ``--init`` is used and there is already a configuration file, ``fensterbrief`` will ask whether you want to use the default value or existing configuration entry or a new value.
+If ``--configure`` is used and there is already a configuration file, ``fensterbrief`` will ask whether you want to use the default value or existing configuration entry or a new value.
 
 
 Customize templates
@@ -317,7 +331,7 @@ My templates look like this:
    personal data
    usage <https://github.com/nitram2342/fensterbrief/templates/template-widerspruch-datennutzung-nach-werbung.pdf>`__
 
-When running ``--init``, ``.lco`` files are copied to the
+When running ``--configure``, ``.lco`` files are copied to the
 ``~/texmf/tex/latex/fensterbrief/`` directory and ``texhash`` is run
 afterwards.
 

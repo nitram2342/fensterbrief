@@ -160,12 +160,12 @@ def main():
     parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')   
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
-    parser.add_argument('--init', help='Initialize the environment', action='store_true')
+    parser.add_argument('--configure', help='Initialize the environment and configure the tool', action='store_true')
     parser.add_argument('--version', help='Show version', action='store_true')
     
     (options, args) = parser.parse_known_args()
 
-    if options.init:
+    if options.configure:
 
         old_config = None
         
@@ -190,7 +190,7 @@ def main():
     
     # create default config file?
     if not os.path.isfile(config_file):
-        print("+ Can't find config file. Please run: %s --init" % sys.argv[0])
+        print("+ Can't find config file. Please run: %s --configure" % sys.argv[0])
         return
     
     # use a different config file?
