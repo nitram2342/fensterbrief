@@ -1,8 +1,8 @@
 fensterbrief
 ============
 
-``fensterbrief`` is a python script to organize and work with LaTeX and
-markdown based letters.
+``fensterbrief`` is a python script for working with letters based on LaTeX and
+markdown.
 
 
 Short introduction

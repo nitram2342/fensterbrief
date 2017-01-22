@@ -18,9 +18,9 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.8',
+    version='0.0.9',
 
-    description='Fensterbrief is a python script to organize and work with LaTeX and Markdown based letters.',
+    description='Fensterbrief is a python script for working with letters based on LaTeX and Markdown.',
     long_description=long_description,
 
     # The project's main homepage.
