@@ -15,6 +15,13 @@ import googlemaps
 
 working_object_file = '.working_object.conf'
 
+def program_exists(program):
+    """ Returns True if a program path exists or a program was found in the $PATH environment."""
+    if shutil.which(program) != None or os.path.exists(program):
+        return True
+    else:
+        return False
+
 def prompt(headline, default, new_config, old_config, config_section, config_key):
 
     print("+ %s" % headline)

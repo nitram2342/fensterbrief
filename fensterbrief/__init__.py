@@ -70,13 +70,7 @@ def init_templates(config_file):
     # update
     subprocess.call(['texhash'])
 
-def check_program(program):
-    """ Returns True if a program path exists or a program was found in the $PATH environment."""
-    if shutil.which(program_name) != None or os.path.exists(program):
-        return True
-    else:
-        return False
-    
+   
 def init_config_file(old_config):
     
     # create a config file
@@ -97,10 +91,10 @@ def init_config_file(old_config):
                         "emacs -nw", config, old_config, "DEFAULT", "MD_EDITOR")
 
 
-    if not program_exists(config.get("DEFAULT", "TEX_EDITOR")):
+    if not fensterbrief.program_exists(config.get("DEFAULT", "TEX_EDITOR")):
         print("+ Error: tex editor does not exist. Please install it before using fensterbrief.")
 
-    if not program_exists(config.get("DEFAULT", "MD_EDITOR")):
+    if not fensterbrief.program_exists(config.get("DEFAULT", "MD_EDITOR")):
         print("+ Error: Markdown editor does not exist. Please install it before using fensterbrief.")
 
 
@@ -124,7 +118,7 @@ def init_pandoc(config, old_config):
                         "${template_dir}/template-pandoc.tex",
                         config, old_config, "pandoc", "template")
 
-    if not program_exists(config.get("pandoc", "program")):
+    if not fensterbrief.program_exists(config.get("pandoc", "program")):
         print("+ Error: The program 'pandoc' does not exist. Please install it before using fensterbrief.")
     
 def init_modules(config, old_config):
@@ -186,7 +180,10 @@ def main():
         init_templates(config_file)            
                 
         return
-
+    elif options.version:
+        print("+ Version: %s" % get_distribution("fensterbrief").version)
+        return
+        
     
     # create default config file?
     if not os.path.isfile(config_file):
@@ -292,9 +289,6 @@ def main():
         print("+ Going to send file: %s" % pdf_file)
         trans.send(pdf_file, dst, working_ref['pdf'])
 
-    elif options.version:
-        print("+ Version: %s" % get_distribution("fensterbrief").version)
-        
     else:
         print("+ Unknown option")
         parser.print_help()
