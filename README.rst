@@ -38,41 +38,41 @@ The ``fensterbrief`` tool is command line based:
 
 ::
 
-usage: fensterbrief [-h] [--list-templates] [--list-letters] [--search STRING]
-                    [--create-folder] [--adopt FILE] [--edit] [--render]
-                    [--set-folder DIR] [--mail-simple-fax DEST]
-                    [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
-                    [--lookup-address STRING] [--keep-folder] [--config FILE]
-                    [--verbose] [--configure] [--version]
+ usage: fensterbrief [-h] [--list-templates] [--list-letters] [--search STRING]
+		     [--create-folder] [--adopt FILE] [--edit] [--render]
+		     [--set-folder DIR] [--mail-simple-fax DEST]
+		     [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
+		     [--lookup-address STRING] [--keep-folder] [--config FILE]
+		     [--verbose] [--configure] [--version]
 
-A command line tool to prepare letters
+ A command line tool to prepare letters
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --list-templates      List all letter templates
-  --list-letters        List all letters
-  --search STRING       Search for a string in filenames
-  --create-folder       Ask for meta data and create a new folder
-  --adopt FILE          Create a new letter based on a previous one
-  --edit                Edit the current letter source file
-  --render              Render PDF file from current markdown or latex
-  --set-folder DIR      Set the working folder
-  --mail-simple-fax DEST
-                        Send a fax via simple-fax.de using the e-mail
-                        interface
-  --soap-simple-fax DEST
-                        Send a fax via simple-fax.de using the SOAP interface
-  --buy-stamp [PRODUCT_ID]
-                        Buy a stamp. Place postage file in current folder or
-                        use together with --adopt.
-  --lookup-address STRING
-                        Search for an address via Google. Can be used together
-                        with --adopt.
-  --keep-folder         Store the adopted letter in the same folder
-  --config FILE         The configuration file to use
-  --verbose             Show what is going on
-  --configure           Initialize the environment and configure the tool
-  --version             Show version
+ optional arguments:
+   -h, --help		show this help message and exit
+   --list-templates	List all letter templates
+   --list-letters	List all letters
+   --search STRING	Search for a string in filenames
+   --create-folder	Ask for meta data and create a new folder
+   --adopt FILE		Create a new letter based on a previous one
+   --edit		Edit the current letter source file
+   --render		Render PDF file from current markdown or latex
+   --set-folder DIR	Set the working folder
+   --mail-simple-fax DEST
+			 Send a fax via simple-fax.de using the e-mail
+			 interface
+   --soap-simple-fax DEST
+			 Send a fax via simple-fax.de using the SOAP interface
+   --buy-stamp [PRODUCT_ID]
+			 Buy a stamp. Place postage file in current folder or
+			 use together with --adopt.
+   --lookup-address STRING
+			 Search for an address via Google. Can be used together
+			 with --adopt.
+   --keep-folder		Store the adopted letter in the same folder
+   --config FILE		The configuration file to use
+   --verbose		Show what is going on
+   --configure		Initialize the environment and configure the tool
+   --version		Show version
 
 
 
@@ -258,8 +258,9 @@ Install dependencies:
 
 ::
 
-        $ sudo apt-get install texlive texlive-lang-german pandoc \
-	    python3-pip
+        $ sudo apt-get install texlive texlive-lang-german \
+	    texlive-fonts-extra \
+	    python3-pip pandoc 
 
 Install ``fensterbrief``:
 
@@ -276,23 +277,23 @@ wizzard mode asks for certain configuration points as shown below.
 
 ::
 
-+ Root directory, where letters should be stored
-  ---------------------------------------------------------------
-  Default value: /home/martin/Documents/letters/
-  Current value: /home/martin/Documents/Vorgaenge/
-  Enter: keep current configuration, 'd': use default configuration
-  > 
-+ Use value: /home/martin/Documents/Vorgaenge/
+ + Root directory, where letters should be stored
+   ---------------------------------------------------------------
+   Default value: /home/martin/Documents/letters/
+   Current value: /home/martin/Documents/Vorgaenge/
+   Enter: keep current configuration, 'd': use default configuration
+   > 
+ + Use value: /home/martin/Documents/Vorgaenge/
 
-+ Template directory, where template letters are stored
-  ---------------------------------------------------------------
-  Default value: ${ROOT_DIR}/_templates/
-  Current value: /home/martin/Documents/Vorgaenge//_templates/
-  Enter: keep current configuration, 'd': use default configuration
-  > d
-+ Use value: ${ROOT_DIR}/_templates/
+ + Template directory, where template letters are stored
+   ---------------------------------------------------------------
+   Default value: ${ROOT_DIR}/_templates/
+   Current value: /home/martin/Documents/Vorgaenge//_templates/
+   Enter: keep current configuration, 'd': use default configuration
+   > d
+ + Use value: ${ROOT_DIR}/_templates/
 
-  [...]
+   [...]
 
 It is possible to use text makros such as the ``${ROOT_DIR}``.
 
