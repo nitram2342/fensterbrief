@@ -276,6 +276,7 @@ wizzard mode asks for certain configuration points as shown below.
 
 ::
 
+ $ fensterbrief --configure
  + Root directory, where letters should be stored
    ---------------------------------------------------------------
    Default value: /home/martin/Documents/letters/
