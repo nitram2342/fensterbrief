@@ -45,7 +45,7 @@ def init_templates(config_file):
     
     # copy templates to tempalte directory
     for res_name in resource_listdir('templates', ''):
-        if res_name.endswith(".tex") or res_name.endswith(".md") or res_name.endswith(".lco"):
+        if res_name.endswith(".tex") or res_name.endswith(".md") or res_name.endswith(".lco") or res_name.endswith(".sty"):
             src_fd = resource_stream('templates', res_name)            
 
             if res_name.endswith(".tex") or res_name.endswith(".md"):

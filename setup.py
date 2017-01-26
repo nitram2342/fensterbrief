@@ -90,6 +90,7 @@ setup(
     package_data={
         'templates': ['*.md',
                       '*.tex',
+                      '*.sty',
                       '*.lco'],
     },
 
