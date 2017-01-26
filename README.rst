@@ -276,6 +276,7 @@ wizzard mode asks for certain configuration points as shown below.
 
 ::
 
+ $ fensterbrief --configure
  + Root directory, where letters should be stored
    ---------------------------------------------------------------
    Default value: /home/martin/Documents/letters/
@@ -308,7 +309,7 @@ To upgrade ``fensterbrief``, use the following commands:
         $ sudo pip3 install fensterbrief --upgrade
 	$ fensterbrief --configure
 	
-If ``--configure`` is used and there is already a configuration file, ``fensterbrief`` will ask whether you want to use the default value or existing configuration entry or a new value.
+If ``--configure`` is used and there is already a configuration file, ``fensterbrief`` will ask whether you want to use the default value or an existing configuration entry or a new value.
 
 
 Customize templates
