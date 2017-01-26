@@ -4,8 +4,6 @@
 #  
 
 import configparser
-import subprocess
-
 from fensterbrief import fensterbrief
 
 def init_config(config, old_config):
@@ -35,5 +33,5 @@ class frank:
 
         print("+ Going to buy a stamp with product ID %s" % product)
         
-        subprocess.call([program, '--format', '26', '--product', product,  '--output', out_dir, '";"'])
+        fensterbrief.run_program(program, ['--format', '26', '--product', product,  '--output', out_dir, '";"'])
 

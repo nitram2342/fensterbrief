@@ -7,7 +7,6 @@
 
 import argparse
 import configparser
-import subprocess
 import os
 import sys
 import shutil
@@ -68,7 +67,7 @@ def init_templates(config_file):
                     shutil.copyfileobj(src_fd, dst_fd)
 
     # update
-    subprocess.call(['texhash'])
+    fensterbrief.run_program('texhash')
 
    
 def init_config_file(old_config):
@@ -262,11 +261,11 @@ def main():
         print("+ Output file %s" % pdf_file)
         
         if src_file.endswith('.tex'):
-            subprocess.call(['latex', '-batch', src_file])           
+            fensterbrief.run_program('latex', ['-batch', src_file])
         elif src_file.endswith('.md'):
-            subprocess.call([config['pandoc']['program'], \
-                             '--template', config['pandoc']['template'], \
-                             '--output', pdf_file, src_file])
+            fensterbrief.run_program(config['pandoc']['program'], \
+                                     ['--template', config['pandoc']['template'], \
+                                      '--output', pdf_file, src_file])
         else:
             print("+ Error: unknown file type for %s" % src_file)
 

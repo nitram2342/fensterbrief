@@ -4,7 +4,6 @@
 #  
 
 import configparser
-import subprocess
 from fensterbrief import fensterbrief
 
 def init_config(config, old_config=None):
@@ -32,5 +31,5 @@ class mail_to_simple_fax_de:
             mail = "preselectid=%s,to='%s@simple-fax.de',subject='%s',body='',attachment='%s'" % \
                    (mail_from, dst_fax_nr, subject, file)
             print(mail)
-            subprocess.call([mail_client, '-compose', mail ])
+            fensterbrief.run_program(mail_client, ['-compose', mail ])
 

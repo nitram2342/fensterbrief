@@ -15,6 +15,7 @@ import googlemaps
 
 working_object_file = '.working_object.conf'
 
+    
 def program_exists(program):
     """ Returns True if a program path exists or a program was found in the $PATH environment."""
     if shutil.which(program) != None or os.path.exists(program):
@@ -22,6 +23,45 @@ def program_exists(program):
     else:
         return False
 
+def run_program(program, param_list=None):
+    """ Run program, print status messages and return either
+        None - if program does not exist,
+        False - if program failed,
+        True - if program was successful.
+
+        If program name contains spaces, this indicates that there are additional params."""
+    
+    splitted = program.split()
+    program = splitted[0]
+
+    if len(splitted) > 0:
+        param_list = splitted[1:] + param_list
+        
+    if param_list:
+        call_args = [program] + param_list
+    else:
+        call_args = [program]
+
+    if not program_exists(program):
+        print("+ Error: Program %s does not exist. Please install the program or adjust your configuration file." % program)
+        return None
+
+    print("+ Going to execute %s" % call_args)
+    ret = subprocess.call(call_args)
+
+    # Return values are evaluated according to best practises. Further
+    # testing will reveal, if 
+    if ret != 0:
+        if ret < 0:
+            print("+ Program %s killed by signal %d." % (program, -ret))
+        else:
+            print("+ Program %s failed with return code %d." % (program, ret))
+        return False
+    else:
+        print("+ Program %s returned sucessfully." % program)
+        return True
+
+    
 def prompt(headline, default, new_config, old_config, config_section, config_key):
 
     print("+ %s" % headline)
@@ -288,7 +328,7 @@ def edit_file(dst_file_name, config):
         print("+ Unsupported file") # already catched by 'if dst_file_name'
         return 
 
-    subprocess.call( config.get('DEFAULT', key).split() + [dst_file_name])
+    run_program(config.get('DEFAULT', key), [dst_file_name])
                 
 
 def gmaps_lookup_address(keyword, api_key):
