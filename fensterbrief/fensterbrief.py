@@ -244,13 +244,15 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
     # https://github.com/waylan/Python-Markdown/blob/master/markdown/extensions/meta.py
     # that is also under a BSD licence
     
-    META_RE = re.compile(r'^[ ]{0,3}(?P<key>[A-Za-z0-9_-]+):\s*(?P<value>.*)\s*')
+    META_RE = re.compile(r'^[ ]{0,3}(?P<key>[\#A-Za-z0-9_-]+):\s*(?P<value>.*)\s*')
     META_MORE_RE = re.compile(r'^[ ]{4,}(?P<value>.*)')
     END_RE = re.compile(r'^(-{3}|\.{3})(\s.*)?')
 
     meta = {}
     just_copy_line = False
     key = None
+
+    key_order = []
 
     print(replace_data)
     
@@ -275,6 +277,7 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                             if key in meta:
                                 meta[key].append(value)
                             else:
+                                key_order.append(key)
                                 meta[key] = [value]
 
                     elif m2:
@@ -285,6 +288,7 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                             if key in meta:
                                 meta[key].append(value)
                             else:
+                                key_order.append(key)
                                 meta[key] = [value]                                
 
                             
@@ -300,7 +304,7 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                                 meta[k] = replace_data[k]
                              
                         # dump yaml data
-                        for k in meta:
+                        for k in key_order:
                             if isinstance(meta[k], list):
                                 if len(meta[k]) == 1:
                                     fout.write("%s: %s\n" % (k, meta[k][0]))
