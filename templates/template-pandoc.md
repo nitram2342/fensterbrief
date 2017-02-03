@@ -14,7 +14,7 @@ closing: Mit freundlichen Grüßen
 my_ref: RG2342
 your_ref: 42
 customer: 1000
-#: Use four spaces before and two spaces after in each line of the 'to' field
+#to: Use four spaces before and two spaces after in each line of the 'to' field
 to: |
     Erika Mustermann  
     Heidestraße 17  
