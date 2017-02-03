@@ -1,11 +1,20 @@
 ---
+#fromcountry: Germany
+#fromname: Erika Mustermann
+#fromnameshort: E. Mustermann
+#fromstreet: Milchstraße 42
+#fromstreetshort: Milchstr. 42
+#fromdistrict: 42523 Somewhere
+#fromphone: +49 30 XXXX XXXX
+#fromfax: +49 30 XXXX XXXX
+#fromemail: test@example.com
 subject: Lorem Ipsum
 opening: Sehr geehrte Frau Mustermann,
 closing: Mit freundlichen Grüßen
 my_ref: RG2342
 your_ref: 42
 customer: 1000
-# Use four spaces before and two spaces after in each line of the 'to' field
+#: Use four spaces before and two spaces after in each line of the 'to' field
 to: |
     Erika Mustermann  
     Heidestraße 17  

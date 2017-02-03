@@ -7,7 +7,17 @@
 ]{scrlttr2}
 
 % Bei Briefen in das Ausland
-%\setkomavar{fromcountry}{Germany}
+
+$if(fromcountry)$\setkomavar{fromcountry}{$fromcountry$}$endif$
+$if(fromname)$\setkomavar{fromname}{$fromname$}$endif$
+$if(fromnameshort)$\setkomavar{fromnameshort}{$fromnameshort$}$endif$
+$if(fromstreet)$\setkomavar{fromstreet}{$fromstreet$}$endif$
+$if(fromstreetshort)$\setkomavar{fromstreetshort}{$fromstreetshort$}$endif$
+$if(fromdistrict)$\setkomavar{fromdistrict}{$fromdistrict$}$endif$
+$if(fromphone)$\setkomavar{fromphone}{$fromphone$}$endif$
+$if(fromfax)$\setkomavar{fromfax}{$fromfax$}$endif$
+$if(fromemail)$\setkomavar{fromemail}{\emaillink{$fromemail$}}$endif$
+
 
 % Falls eine Unterschrift genutzt werden soll
 %\setkomavar{signature}{\\[-3\baselineskip]
