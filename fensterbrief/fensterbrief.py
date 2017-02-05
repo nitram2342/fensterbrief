@@ -34,7 +34,7 @@ def run_program(program, param_list=None):
     splitted = program.split()
     program = splitted[0]
 
-    if len(splitted) > 0:
+    if len(splitted) > 1:
         param_list = splitted[1:] + param_list
         
     if param_list:
@@ -69,7 +69,7 @@ def prompt(headline, default, new_config, old_config, config_section, config_key
     if default:
         print("  Default value: %s" % default)
 
-    if old_config:
+    if old_config and config_section in old_config:
         print("  Current value: %s" % old_config.get(config_section, config_key))
         if default:
             print("  Enter: keep current configuration, 'd': use default configuration")
@@ -83,7 +83,7 @@ def prompt(headline, default, new_config, old_config, config_section, config_key
     result = input("  > ")
 
     if result == "":
-        if old_config:
+        if old_config and config_section in old_config:
             result = old_config.get(config_section, config_key)
         elif default:
             result = default

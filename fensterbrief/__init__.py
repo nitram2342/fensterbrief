@@ -119,10 +119,19 @@ def init_pandoc(config, old_config):
 
     if not fensterbrief.program_exists(config.get("pandoc", "program")):
         print("+ Error: The program 'pandoc' does not exist. Please install it before using fensterbrief.")
+
+def init_latex(config, old_config):
     
+    fensterbrief.prompt("Your preferred LaTeX program",
+                        "latex", config, old_config, "latex", "program")
+
+    if not fensterbrief.program_exists(config.get("latex", "program")):
+        print("+ Error: The LaTeX program does not exist. Please install it before using fensterbrief.")
+
 def init_modules(config, old_config):
 
     init_pandoc(config, old_config)
+    init_latex(config, old_config)
     init_google(config, old_config)
 
     mail_to_simple_fax_de.init_config(config, old_config)
@@ -261,7 +270,7 @@ def main():
         print("+ Output file %s" % pdf_file)
         
         if src_file.endswith('.tex'):
-            fensterbrief.run_program('latex', ['-batch', src_file])
+            fensterbrief.run_program(config['latex']['program'], ['-batch', src_file])
         elif src_file.endswith('.md'):
             fensterbrief.run_program(config['pandoc']['program'], \
                                      ['--template', config['pandoc']['template'], \

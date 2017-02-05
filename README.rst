@@ -348,14 +348,17 @@ Example configuration file ``~/.fensterbrief.conf``:
       template_dir = ${ROOT_DIR}/_templates/
       tex_editor = texmaker
       md_editor = emacs -nw
-
+      
       [pandoc]
       program = pandoc
       template = ${template_dir}/template-pandoc.tex
-
+      
+      [latex]
+      program = latex
+      
       [google]
       api_key = xxxx
-
+      
       [mail_to_simple_fax_de]
       mail_client = thunderbird
       mail_from = id3
