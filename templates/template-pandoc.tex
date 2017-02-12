@@ -6,6 +6,10 @@
    draft=false%%             Entwurfsmodus!
 ]{scrlttr2}
 
+% \tightlist used by pandoc
+\providecommand{\tightlist}{%
+    \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
 % Bei Briefen in das Ausland
 
 $if(fromcountry)$\setkomavar{fromcountry}{$fromcountry$}$endif$
