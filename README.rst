@@ -258,8 +258,9 @@ Install dependencies:
 ::
 
         $ sudo apt-get install texlive texlive-lang-german \
-	    texlive-fonts-extra \
-	    python3-pip pandoc 
+	    texlive-fonts-extra texlive-latex-extra texlive-generic-recommended \
+	    python3-pip pandoc \
+	     
 
 Install ``fensterbrief``:
 
