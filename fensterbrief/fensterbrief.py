@@ -18,7 +18,7 @@ working_object_file = '.working_object.conf'
     
 def program_exists(program):
     """ Returns True if a program path exists or a program was found in the $PATH environment."""
-    if shutil.which(program) != None or os.path.exists(program):
+    if shutil.which(program) is not None or os.path.exists(program):
         return True
     else:
         return False
@@ -69,7 +69,7 @@ def prompt(headline, default, new_config, old_config, config_section, config_key
     if default:
         print("  Default value: %s" % default)
 
-    if old_config and config_section in old_config:
+    if old_config and config_section in old_config and config_key in old_config[config_section]:
         print("  Current value: %s" % old_config.get(config_section, config_key))
         if default:
             print("  Enter: keep current configuration, 'd': use default configuration")
@@ -83,7 +83,7 @@ def prompt(headline, default, new_config, old_config, config_section, config_key
     result = input("  > ")
 
     if result == "":
-        if old_config and config_section in old_config:
+        if old_config and config_section in old_config and config_key in old_config[config_section]:
             result = old_config.get(config_section, config_key)
         elif default:
             result = default
@@ -113,25 +113,29 @@ def list_letters(dir_name, search=None):
 def list_files(dir_name, search=None, rel_dir=None):
     for (dirpath, dirnames, filenames) in os.walk(dir_name):
         for file in sorted(filenames):
-            if (file.endswith(".tex") or file.endswith(".md") )and (search == None or search.lower() in file.lower()):
+            if (file.endswith(".tex") or file.endswith(".md") )and (search is None or search.lower() in file.lower()):
                 print("  + %s" % os.path.relpath(os.path.join(dirpath, file), rel_dir))
     
 
-def write_working_ref(doc_root, working_dir, working_src_file=None, working_pdf_file=None):
+def write_working_ref(doc_root, working_dir=None, working_src_file=None, working_pdf_file=None):
     """ Write information about the working directory into a file """
 
+    if working_dir is None and working_src_file is not None:
+        working_dir = os.path.dirname(os.path.abspath(working_src_file))
+        print("+ Derived folder path %s from source file %s" % (working_dir, working_src_file))
+
     # if working dir is absolute, make a directory name relative to doc_root
-    if os.sep in working_dir and os.path.exists(working_dir):
+    if working_dir is not None and os.sep in working_dir and os.path.exists(working_dir):
         working_dir = os.path.abspath(working_dir)
         working_dir = os.path.relpath(working_dir, doc_root)
 
     print("+ Change folder to %s" % working_dir)
 
     # derive PDF file name from LaTeX/MD filename
-    if working_src_file != None and working_pdf_file == None:
+    if working_src_file is not None and working_pdf_file is None:
         working_pdf_file = working_src_file.replace(".md", ".pdf").replace(".tex", ".pdf")
         print("+ PDF output file will be %s" % working_pdf_file)
-    
+
     # create a config file
     config = configparser.RawConfigParser()
 
@@ -197,6 +201,15 @@ def create_folder(doc_root, foldername):
     return dst_folder_path
 
 
+def expand_file_name(path, doc_root):
+    ''' Check parameter and expand it to a file name. '''
+
+    if not path.startswith("/"):
+        return os.path.join(doc_root, path)
+    else:
+        return path
+
+    
 def adopt(doc_root, src_file, keep_folder=False, address=None):
 
     recipient_name = request_recipient()
@@ -209,9 +222,7 @@ def adopt(doc_root, src_file, keep_folder=False, address=None):
         print("+ Unkown file suffix in %s. Can't process file." % src_file)
         return None
 
-    # check source file name
-    if not src_file.startswith("/"):
-        src_file = os.path.join(doc_root, src_file)
+    src_file = expand_file_name(src_file, doc_root)
 
     if keep_folder:        
         dst_folder_path = os.path.dirname(src_file)
@@ -292,7 +303,7 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                                 meta[key] = [value]                                
 
                             
-                    elif END_RE.match(line) and key != None:
+                    elif END_RE.match(line) and key is not None:
                         
                         just_copy_line = True
                         #print(replace_data)
@@ -356,7 +367,7 @@ def print_address_lookup_hits(results, idx=None):
     counter = 0
     for i in results:
 
-        if idx == None or (idx != None and counter == idx):
+        if idx is None or (idx is not None and counter == idx):
             print("+ #%d" % counter)
         
             for l in i:
@@ -368,7 +379,7 @@ def print_address_lookup_hits(results, idx=None):
 def lookup_address(keyword, config):
     
     hits = gmaps_lookup_address(keyword, config['google']['api_key'])
-    if hits == None:
+    if hits is None:
         print("+ An error occured.")
         return None
     else:

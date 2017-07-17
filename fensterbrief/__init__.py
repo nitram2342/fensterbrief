@@ -151,14 +151,15 @@ def main():
     config_file = os.path.expanduser('~/.fensterbrief.conf')
 
     # process command line arguments
-    parser = argparse.ArgumentParser(description='A command line tool to prepare letters') 
+    parser = argparse.ArgumentParser(description='Manage letters via command line')
     parser.add_argument('--list-templates', help='List all letter templates', action='store_true')
     parser.add_argument('--list-letters', help='List all letters', action='store_true')
     parser.add_argument('--search', help='Search for a string in filenames', metavar='STRING')
     parser.add_argument('--create-folder', help='Ask for meta data and create a new folder', action='store_true')
     parser.add_argument('--adopt', help='Create a new letter based on a previous one', metavar='FILE')
-    parser.add_argument('--edit', help='Edit the current letter source file', action='store_true')
-    parser.add_argument('--render', help='Render PDF file from current markdown or latex', action='store_true')
+    parser.add_argument('--edit', help='Edit the current letter or another source file', metavar='FILE', nargs='?', const='')
+    parser.add_argument('--render', help='Render PDF file from current markdown or latex', metavar='FILE', nargs='?', const='')
+    parser.add_argument('--show-pdf', help='Open PDF file in PDF viewer', metavar='FILE', nargs='?', const='')
     parser.add_argument('--set-folder', help='Set the working folder', metavar='DIR')
     parser.add_argument('--mail-simple-fax', help='Send a fax via simple-fax.de using the e-mail interface', metavar='DEST')
     parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
@@ -261,19 +262,37 @@ def main():
         outdir = os.path.join(root_dir, working_ref['dir'])
         f.buy_stamp(outdir, options.buy_stamp)
 
-    elif options.edit:
-        working_ref = fensterbrief.load_working_ref(root_dir)
-        src_file = os.path.join(root_dir, working_ref['dir'], working_ref['src'])
+    elif options.edit is not None:
+
+        if options.edit == '':
+            working_ref = fensterbrief.load_working_ref(root_dir)
+            src_file = os.path.join(root_dir, working_ref['dir'], working_ref['src'])
+        else:
+            # abs or rel?           
+            src_file = fensterbrief.expand_file_name(options.edit, root_dir)
+            
         print("+ Edit file %s" % src_file)
+
+        # set working ref on edit
+        fensterbrief.write_working_ref(root_dir, working_src_file=src_file)
+
         fensterbrief.edit_file(src_file, config)
         
-    elif options.render:
+    elif options.render is not None:
+
+        if options.render != '':
+            src_file = fensterbrief.expand_file_name(options.render, root_dir)
+
+            # set working ref on edit
+            fensterbrief.write_working_ref(root_dir, working_src_file=src_file)
+            
         working_ref = fensterbrief.load_working_ref(root_dir)
         src_file = os.path.join(root_dir, working_ref['dir'], working_ref['src'])
-        pdf_file = os.path.join(root_dir, working_ref['dir'], working_ref['pdf'])        
+        pdf_file = os.path.join(root_dir, working_ref['dir'], working_ref['pdf'])
 
         print("+ Rendering file %s" % src_file)
         print("+ Output file %s" % pdf_file)
+
         
         if src_file.endswith('.tex'):
             fensterbrief.run_program(config['latex']['program'], ['-batch', src_file])
@@ -283,6 +302,16 @@ def main():
                                       '--output', pdf_file, src_file])
         else:
             print("+ Error: unknown file type for %s" % src_file)
+
+    elif options.show_pdf is not None:
+        
+        if options.show_pdf != '':
+            pdf_file = fensterbrief.expand_file_name(options.show_pdf, root_dir)
+        else:
+            working_ref = fensterbrief.load_working_ref(root_dir)
+            pdf_file = os.path.join(root_dir, working_ref['dir'], working_ref['pdf'])
+        
+        fensterbrief.run_program(config['DEFAULT']['pdf_viewer'], [pdf_file])
 
         
     elif options.mail_simple_fax or options.soap_simple_fax:
