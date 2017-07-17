@@ -8,9 +8,9 @@ Short introduction
 ==================
 
 ``fensterbrief`` (German for window envelope) is a helper script to
-manage the creation and archival of LaTeX-based and Markdown-based
-letters. It helps you in managing a folders in a structured way and to
-name files in a consistent way. It helps in creating new letters based
+manage the creation and archival of LaTeX- and Markdown-based
+letters. It helps you in managing folders in a structured way and to
+consistently name files. It helps in creating new letters based
 on old ones. It tries to make letter writing easy witout adding
 over-specialised functionality.
 
