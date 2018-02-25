@@ -1,9 +1,10 @@
 \ProvidesFile{sections.lco}%
              [2008/12/03 v0.2 unsupported LCO-file]%
-
 \RequirePackage{geometry}
 \geometry{top=47mm,right=20mm,bottom=27mm,left=20mm}
 
+
+\RequirePackage{advdate}
 \RequirePackage{booktabs}
 \RequirePackage{longtable}
 
