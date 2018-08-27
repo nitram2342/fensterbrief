@@ -8,6 +8,7 @@
 #fromphone: +49 30 XXXX XXXX
 #fromfax: +49 30 XXXX XXXX
 #fromemail: test@example.com
+#signature: ../signature.pdf
 subject: Lorem Ipsum
 opening: Sehr geehrte Frau Mustermann,
 closing: Mit freundlichen Grüßen
