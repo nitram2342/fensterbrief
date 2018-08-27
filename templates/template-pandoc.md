@@ -9,6 +9,7 @@
 #fromfax: +49 30 XXXX XXXX
 #fromemail: test@example.com
 #signature: ../signature.pdf
+#postage: stamp-2342.pdf
 subject: Lorem Ipsum
 opening: Sehr geehrte Frau Mustermann,
 closing: Mit freundlichen Grüßen
