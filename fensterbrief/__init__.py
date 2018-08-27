@@ -161,6 +161,7 @@ def main():
     parser.add_argument('--render', help='Render PDF file from current markdown or latex', metavar='FILE', nargs='?', const='')
     parser.add_argument('--show-pdf', help='Open PDF file in PDF viewer', metavar='FILE', nargs='?', const='')
     parser.add_argument('--set-folder', help='Set the working folder', metavar='DIR')
+    parser.add_argument('--cat', help='Dump content of a letter', metavar='FILE')    
     parser.add_argument('--mail-simple-fax', help='Send a fax via simple-fax.de using the e-mail interface', metavar='DEST')
     parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
     parser.add_argument('--buy-stamp', help='Buy a stamp. Place postage file in current folder or use together with --adopt.', nargs='?', metavar='PRODUCT_ID', const='1')
@@ -172,8 +173,13 @@ def main():
     parser.add_argument('--configure', help='Initialize the environment and configure the tool', action='store_true')
     parser.add_argument('--version', help='Show version', action='store_true')
     
-    (options, args) = parser.parse_known_args()
+    (options, unknown_options) = parser.parse_known_args()
 
+    if unknown_options:
+        print("+ Unknown options: %s" % unknown_options)
+        parser.print_help()
+        
+    
     if options.configure:
 
         old_config = None
@@ -222,23 +228,42 @@ def main():
 
     if options.list_templates:
         fensterbrief.list_templates(template_dir, root_dir)
-
-    elif options.list_letters:
+        return
+    
+    if options.list_letters:
         fensterbrief.list_letters(root_dir)
+        return
 
-    elif options.search:
+    if options.search:
         fensterbrief.list_letters(root_dir, options.search)
+        return
 
-    elif options.set_folder:
+    if options.set_folder:
         print("+ Set working folder to %s" % options.set_folder)
         fensterbrief.write_working_ref(root_dir, options.set_folder)
+        return
         
-    elif options.create_folder:
+    if options.create_folder:
         recipient_name = fensterbrief.request_recipient()
         foldername = fensterbrief.request_folder(recipient_name)
         dst_folder_path = fensterbrief.create_folder(root_dir, foldername)
+        return
 
-    elif options.adopt:
+    if options.cat is not None:
+
+        # abs or rel?           
+        src_file = fensterbrief.expand_file_name(options.cat, root_dir)
+           
+        print("+ Print content of file %s" % src_file)
+
+        fensterbrief.cat_file(src_file)
+        return
+    
+    if options.lookup_address:
+        fensterbrief.lookup_address(options.lookup_address, config)
+            
+
+    if options.adopt:
         address = None
         if options.lookup_address:
             address = fensterbrief.lookup_address(options.lookup_address, config)
@@ -253,16 +278,13 @@ def main():
 
             fensterbrief.edit_file(dst_file_name, config)
 
-    elif options.lookup_address:
-        fensterbrief.lookup_address(options.lookup_address, config)
-            
-    elif options.buy_stamp: # after adopt
+    if options.buy_stamp: # after adopt
         working_ref = fensterbrief.load_working_ref(root_dir)
         f = frank.frank(config)
         outdir = os.path.join(root_dir, working_ref['dir'])
         f.buy_stamp(outdir, options.buy_stamp)
-
-    elif options.edit is not None:
+        
+    if options.edit is not None:
 
         if options.edit == '':
             working_ref = fensterbrief.load_working_ref(root_dir)
@@ -277,8 +299,9 @@ def main():
         fensterbrief.write_working_ref(root_dir, working_src_file=src_file)
 
         fensterbrief.edit_file(src_file, config)
+
         
-    elif options.render is not None:
+    if options.render is not None:
 
         if options.render != '':
             src_file = fensterbrief.expand_file_name(options.render, root_dir)
@@ -303,7 +326,7 @@ def main():
         else:
             print("+ Error: unknown file type for %s" % src_file)
 
-    elif options.show_pdf is not None:
+    if options.show_pdf is not None:
         
         if options.show_pdf != '':
             pdf_file = fensterbrief.expand_file_name(options.show_pdf, root_dir)
@@ -314,7 +337,7 @@ def main():
         fensterbrief.run_program(config['DEFAULT']['pdf_viewer'], [pdf_file])
 
         
-    elif options.mail_simple_fax or options.soap_simple_fax:
+    if options.mail_simple_fax or options.soap_simple_fax:
       
         if options.mail_simple_fax:
             trans = mail_to_simple_fax_de.mail_to_simple_fax_de(config)
@@ -332,9 +355,6 @@ def main():
         print("+ Going to send file: %s" % pdf_file)
         trans.send(pdf_file, dst, working_ref['pdf'])
 
-    else:
-        print("+ Unknown option")
-        parser.print_help()
 
         
 if __name__ == "__main__":

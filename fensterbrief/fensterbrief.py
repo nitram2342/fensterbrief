@@ -15,6 +15,19 @@ import googlemaps
 
 working_object_file = '.working_object.conf'
 
+def is_markdown(filename):
+    if filename.endswith(".md"):
+        return True
+    else:
+        return False
+
+def is_latex(filename):
+    if filename.endswith(".tex"):
+        return True
+    else:
+        return False
+    
+    
     
 def program_exists(program):
     """ Returns True if a program path exists or a program was found in the $PATH environment."""
@@ -113,7 +126,7 @@ def list_letters(dir_name, search=None):
 def list_files(dir_name, search=None, rel_dir=None):
     for (dirpath, dirnames, filenames) in os.walk(dir_name):
         for file in sorted(filenames):
-            if (file.endswith(".tex") or file.endswith(".md") )and (search is None or search.lower() in file.lower()):
+            if (is_latex(file) or is_markdown(file) )and (search is None or search.lower() in file.lower()):
                 print("  + %s" % os.path.relpath(os.path.join(dirpath, file), rel_dir))
     
 
@@ -156,12 +169,28 @@ def load_working_ref(doc_root):
     config.read(file)
     return config['DEFAULT']
 
-def request_recipient():
-    recipient_name = slugify(input("+ Recipient short name: "), separator="_")
-    return recipient_name
+def get_default(defaults, key):
+    if defaults is not None and key in defaults and defaults[key] is not None and defaults[key] != "":
+        return str(defaults[key])
+    else:
+        return None
+    
+def request_recipient(defaults=None):
+    recipient_shortname = get_default(defaults, "recipient-shortname")
+    if recipient_shortname:
+        prompt = "+ Recipient short name (default: %s): " % recipient_shortname
+    else:
+        prompt = "+ Recipient short name: " 
+
+    raw_input = input(prompt)
+
+    if raw_input == "":
+        raw_input = recipient_shortname
+        
+    return slugify(raw_input, separator="_")
 
 
-def request_folder(recipient_name):
+def request_folder(recipient_name, defaults=None):
     month_str = date.today().strftime("%Y-%m")
     folder_subject = slugify(input("+ Folder subject: "), separator="_")
     foldername = "%s_%s-%s" % (month_str, recipient_name, folder_subject)
@@ -169,20 +198,31 @@ def request_folder(recipient_name):
     return foldername
 
 
-def request_file(recipient_name, filetype="tex"):
-    letter_subject_raw = input("+ Letter subject: ")
+def request_file(recipient_name, filetype="tex", defaults=None):
+
+    default_subject = get_default(defaults, "subject")
+    if default_subject:
+        prompt = "+ Letter subject (default: %s): " % default_subject
+    else:
+        prompt = "+ Letter subject: "
+        
+    letter_subject_raw = input(prompt)
+    if letter_subject_raw == "":
+        letter_subject_raw = default_subject
+        
+    
     letter_subject = slugify(letter_subject_raw, separator="_")
     filename = "%s_%s-%s.%s" % (date.today().isoformat(), \
                                 recipient_name, letter_subject, filetype)
     return [filename, letter_subject_raw]
 
 
-def request_file_and_folder(recipient_name, filetype="tex"):
-    recipient_name = request_recipient()
-    foldername = request_folder(recipient_name)
-    filename, subject = request_file(recipient_name, filetype)
-    
-    return [foldername, filename]
+#def request_file_and_folder(recipient_name, filetype="tex", defaults=None):
+#    recipient_name = request_recipient(defaults)
+#    foldername = request_folder(recipient_name, defaults)
+#    filename, subject = request_file(recipient_name, filetype, defaults)
+ 
+#    return [foldername, filename]
 
 
 def create_folder(doc_root, foldername):
@@ -212,18 +252,36 @@ def expand_file_name(path, doc_root):
     
 def adopt(doc_root, src_file, keep_folder=False, address=None):
 
-    recipient_name = request_recipient()
+    recipient_name = None
 
-    if src_file.endswith(".tex"):
-        new_filename, subject = request_file(recipient_name, 'tex')
-    elif src_file.endswith(".md"):
-        new_filename, subject = request_file(recipient_name, 'md')
+    defaults = None
+    
+    src_file = expand_file_name(src_file, doc_root)
+
+    # try to load some information from markdown file.
+    if is_markdown(src_file):
+        if defaults is None:
+            defaults = {}
+        yaml = read_yaml_from_md(src_file)
+        for yaml_key in ['recipient-shortname', 'subject']:
+            if yaml_key in yaml:                    
+                defaults[yaml_key] = yaml[yaml_key]
+            else: # should that be the default?
+                defaults[yaml_key] = ""
+            
+    recipient_name = request_recipient(defaults)
+        
+
+    if is_latex(src_file):
+        new_filename, subject = request_file(recipient_name, 'tex', defaults)
+    elif is_markdown(src_file):
+        new_filename, subject = request_file(recipient_name, 'md', defaults)
     else:
         print("+ Unkown file suffix in %s. Can't process file." % src_file)
         return None
 
-    src_file = expand_file_name(src_file, doc_root)
-
+    print("+ New filename is %s" % new_filename)
+    
     if keep_folder:        
         dst_folder_path = os.path.dirname(src_file)
     else:
@@ -233,10 +291,11 @@ def adopt(doc_root, src_file, keep_folder=False, address=None):
     # copy file
     dst_file_path = os.path.join(dst_folder_path, new_filename)
     print("+ Copy file %s to %s" % (src_file, dst_file_path))
-    if dst_file_path.endswith(".tex"):
+    if is_latex(dst_file_path):
         shutil.copyfile(src_file,  dst_file_path)
     else:
-        replace_data = { 'subject' : subject }
+        replace_data = { 'subject' : subject,
+                         'recipient-shortname' : recipient_name}
         if address:
             replace_data['to'] = address
             
@@ -249,15 +308,53 @@ def adopt(doc_root, src_file, keep_folder=False, address=None):
     return dst_file_path
 
 
+# Regexps taken from
+# https://github.com/waylan/Python-Markdown/blob/master/markdown/extensions/meta.py
+# that is also under a BSD licence
+    
+META_RE = re.compile(r'^[ ]{0,3}(?P<key>[\#A-Za-z0-9_-]+):\s*(?P<value>.*)\s*')
+META_MORE_RE = re.compile(r'^[ ]{4,}(?P<value>.*)')
+END_RE = re.compile(r'^(-{3}|\.{3})(\s.*)?')
+
+def read_yaml_from_md(file):
+
+    key = None
+    meta = {}
+    
+    with open(file) as fin:
+        for line in fin.readlines():
+            m1 = META_RE.match(line)
+            m2 = META_MORE_RE.match(line)
+                    
+            if m1:
+
+                key = m1.group('key').lower().strip()
+                value = m1.group('value').strip()
+
+                if value != '|':
+                    if key in meta:
+                        meta[key].append(value)
+                    else:
+                        meta[key] = value
+
+            elif m2:
+
+                if key:
+                    value = m2.group('value').strip()
+                            
+                    if key in meta:
+                        meta[key].append(value)
+                    else:
+                        meta[key] = [value]                                
+
+                            
+                elif END_RE.match(line) and key is not None:
+                    return meta
+
+    return meta
+        
 def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
 
-    # Regexps taken from
-    # https://github.com/waylan/Python-Markdown/blob/master/markdown/extensions/meta.py
-    # that is also under a BSD licence
-    
-    META_RE = re.compile(r'^[ ]{0,3}(?P<key>[\#A-Za-z0-9_-]+):\s*(?P<value>.*)\s*')
-    META_MORE_RE = re.compile(r'^[ ]{4,}(?P<value>.*)')
-    END_RE = re.compile(r'^(-{3}|\.{3})(\s.*)?')
 
     meta = {}
     just_copy_line = False
@@ -268,6 +365,7 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
     print(replace_data)
     
     with open(src_file) as fin:
+        
         with open(dst_file, 'w') as fout:
             
             for line in fin.readlines():
@@ -311,9 +409,11 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                         
                         # replace data
                         for k in replace_data:
-                            if k in meta:
-                                meta[k] = replace_data[k]
-                             
+                            if k not in meta:
+                                key_order.append(k)
+                            meta[k] = replace_data[k] # replace
+
+                                
                         # dump yaml data
                         for k in key_order:
                             if isinstance(meta[k], list):
@@ -332,12 +432,16 @@ def copy_and_adjust_md(src_file,  dst_file, replace_data={}):
                     else:
                         fout.write(line)
 
-        
+def cat_file(fname):
+    with open(fname) as fin:
+        print(fin.read())
+    
+    
 def edit_file(dst_file_name, config):
     key = None    
-    if dst_file_name.endswith(".tex"):
+    if is_latex(dst_file_name):
         key = 'TEX_EDITOR'
-    elif dst_file_name.endswith(".md"):
+    elif is_markdown(dst_file_name):
         key = 'MD_EDITOR'
     else:
         print("+ Unsupported file") # already catched by 'if dst_file_name'
