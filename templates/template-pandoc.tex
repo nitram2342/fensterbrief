@@ -24,11 +24,15 @@ $if(fromemail)$\setkomavar{fromemail}{\emaillink{$fromemail$}}$endif$
 
 
 % Falls eine Unterschrift genutzt werden soll
-%\setkomavar{signature}{\\[-3\baselineskip]
-%\includegraphics[scale=.5]{../signature.pdf}\\
-%Foo Bar}
+$if(signature)$
+\setkomavar{signature}{\\[-3\baselineskip]
+\includegraphics[scale=.5]{$signature$}\\
+$fromname$}
+$endif$
 
-% \setkomavar{PPdatamatrix}{\includegraphics[trim=75mm 245mm 115mm 25mm]{postage_2017-01-03.pdf}}
+$if(postage)$
+\setkomavar{PPdatamatrix}{\includegraphics[trim=75mm 245mm 115mm 25mm]{$postage$}}
+$endif$
 
 \begin{document}
  \begin{letter}{
