@@ -37,41 +37,45 @@ The ``fensterbrief`` tool is command line based:
 
 ::
 
- usage: fensterbrief [-h] [--list-templates] [--list-letters] [--search STRING]
-		     [--create-folder] [--adopt FILE] [--edit] [--render]
-		     [--set-folder DIR] [--mail-simple-fax DEST]
-		     [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
-		     [--lookup-address STRING] [--keep-folder] [--config FILE]
-		     [--verbose] [--configure] [--version]
+$ fensterbrief --help
+usage: fensterbrief [-h] [--list-templates] [--list-letters] [--search STRING]
+                    [--create-folder] [--adopt FILE] [--edit [FILE]]
+                    [--render [FILE]] [--show-pdf [FILE]] [--set-folder DIR]
+                    [--cat FILE] [--mail-simple-fax DEST]
+                    [--soap-simple-fax DEST] [--buy-stamp [PRODUCT_ID]]
+                    [--lookup-address STRING] [--keep-folder] [--config FILE]
+                    [--verbose] [--configure] [--version]
 
- A command line tool to prepare letters
+Manage letters via command line
 
- optional arguments:
-   -h, --help		show this help message and exit
-   --list-templates	List all letter templates
-   --list-letters	List all letters
-   --search STRING	Search for a string in filenames
-   --create-folder	Ask for meta data and create a new folder
-   --adopt FILE		Create a new letter based on a previous one
-   --edit		Edit the current letter source file
-   --render		Render PDF file from current markdown or latex
-   --set-folder DIR	Set the working folder
-   --mail-simple-fax DEST
-			 Send a fax via simple-fax.de using the e-mail
-			 interface
-   --soap-simple-fax DEST
-			 Send a fax via simple-fax.de using the SOAP interface
-   --buy-stamp [PRODUCT_ID]
-			 Buy a stamp. Place postage file in current folder or
-			 use together with --adopt.
-   --lookup-address STRING
-			 Search for an address via Google. Can be used together
-			 with --adopt.
-   --keep-folder		Store the adopted letter in the same folder
-   --config FILE		The configuration file to use
-   --verbose		Show what is going on
-   --configure		Initialize the environment and configure the tool
-   --version		Show version
+optional arguments:
+  -h, --help            show this help message and exit
+  --list-templates      List all letter templates
+  --list-letters        List all letters
+  --search STRING       Search for a string in filenames
+  --create-folder       Ask for meta data and create a new folder
+  --adopt FILE          Create a new letter based on a previous one
+  --edit [FILE]         Edit the current letter or another source file
+  --render [FILE]       Render PDF file from current markdown or latex
+  --show-pdf [FILE]     Open PDF file in PDF viewer
+  --set-folder DIR      Set the working folder
+  --cat FILE            Dump content of a letter
+  --mail-simple-fax DEST
+                        Send a fax via simple-fax.de using the e-mail
+                        interface
+  --soap-simple-fax DEST
+                        Send a fax via simple-fax.de using the SOAP interface
+  --buy-stamp [PRODUCT_ID]
+                        Buy a stamp. Place postage file in current folder or
+                        use together with --adopt.
+  --lookup-address STRING
+                        Search for an address via Google. Can be used together
+                        with --adopt.
+  --keep-folder         Store the adopted letter in the same folder
+  --config FILE         The configuration file to use
+  --verbose             Show what is going on
+  --configure           Initialize the environment and configure the tool
+  --version             Show version
 
 
 
@@ -159,7 +163,12 @@ explicitly as shown below:
          $ fensterbrief --render
 
 Afterwards you can open the rendered PDF file in a PDF viewer, check the
-output and print the document.
+output and print the document:
+
+::
+
+         $ fensterbrief --show-pdf
+
 
 If you want to make further changes to your letter, you can run the
 editor again:
@@ -167,6 +176,14 @@ editor again:
 ::
 
          $ fensterbrief --edit
+
+
+Commands can be chained, for example:
+
+::
+
+         $ fensterbrief --edit --render --show-pdf
+
 
 To render PDF files from Markdown via LaTeX, ``fensterbrief`` uses
 `pandoc <https://pandoc.org/>`__ with this LaTeX template:
