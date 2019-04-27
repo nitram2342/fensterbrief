@@ -31,7 +31,11 @@ $fromname$}
 $endif$
 
 $if(postage)$
-\setkomavar{PPdatamatrix}{\includegraphics[trim=75mm 245mm 115mm 25mm]{$postage$}}
+\setkomavar{PPdatamatrix}{
+  \begin{tikzpicture}[overlay]
+    \node[xshift=-2cm,yshift=-1cm]{\includegraphics[trim=35mm 225mm 117mm 55mm,clip]{$postage$}};
+  \end{tikzpicture}
+}
 $endif$
 
 \begin{document}

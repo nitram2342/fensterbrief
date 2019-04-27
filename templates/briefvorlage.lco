@@ -3,6 +3,7 @@
 \RequirePackage{geometry}
 \geometry{top=47mm,right=20mm,bottom=27mm,left=20mm}
 
+\RequirePackage{tikzpagenodes}
 
 \RequirePackage{advdate}
 \RequirePackage{booktabs}
@@ -252,10 +253,5 @@
 
 \renewcommand*{\raggedsignature}{\raggedright} 
 
-
-\newcommand{\includepostage}[1]{%
-  \AddToShipoutPictureBG*{%
-    \put(\LenToUnit{68mm},\LenToUnit{-42mm}){%
-      \includegraphics[trim=57mm 228mm 114mm 55mm,clip]{#1}}}}
 
 \endinput
