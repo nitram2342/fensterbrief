@@ -5,6 +5,7 @@
 
 import configparser
 from fensterbrief import fensterbrief
+import re
 
 def init_config(config, old_config=None):
 
@@ -27,6 +28,8 @@ class mail_to_simple_fax_de:
         mail_client = self.config.get('mail_to_simple_fax_de', 'mail_client')
         mail_from = self.config.get('mail_to_simple_fax_de', 'mail_from')
 
+        dst_fax_nr = re.sub(r'[^\d\+]', '', dst_fax_nr)
+        
         if mail_client == 'thunderbird':
             mail = "preselectid=%s,to='%s@simple-fax.de',subject='%s',body='',attachment='%s'" % \
                    (mail_from, dst_fax_nr, subject, file)
