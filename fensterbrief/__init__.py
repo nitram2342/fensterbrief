@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  Copyright 2016 Martin Schobert <martin@weltregierung.de>
+#  Copyright 2016 - 2019 Martin Schobert <martin@weltregierung.de>
 #  
 
 """ The main routine for the fensterbrief script """
@@ -10,6 +10,8 @@ import configparser
 import os
 import sys
 import shutil
+import re
+
 from fensterbrief import fensterbrief
 from fensterbrief.transmission.simple_fax_de import mail_to_simple_fax_de
 from fensterbrief.transmission.simple_fax_de import soap_to_simple_fax_de
@@ -145,16 +147,38 @@ def init_modules(config, old_config):
     frank.init_config(config, old_config)
     
 
+    
+def add_yaml_keys_as_params(parser, defaults):
+    already_added_args = {}
+    
+    for key in defaults:
+        print("+ Check: %s " % key)
+        match = re.match(r'^\#?\s*([A-Za-z0-9\_\-]+)', key)
+        if match:
+            k = match.group(1)
+            if k not in already_added_args:
+                if k in defaults:
+                    print("Y: %s" % defaults[k])
+                    default_value = defaults[k]
+                else:
+                    default_value = None
+                    
+                parser.add_argument('--c-' + k , help='Set Markdown YAML header (default: "%s")'  % default_value,
+                                    metavar='STR', default=default_value)
+                already_added_args[k] = True
+    
 def main():
 
     # config
     config_file = os.path.expanduser('~/.fensterbrief.conf')
 
     # process command line arguments
-    parser = argparse.ArgumentParser(description='Manage letters via command line')
+    parser = argparse.ArgumentParser(description='Manage letters via command line', add_help=False)
+
+    parser.add_argument('-h', '--help', action='store_true', dest='help')
     parser.add_argument('--list-templates', help='List all letter templates', action='store_true')
     parser.add_argument('--list-letters', help='List all letters', action='store_true')
-    parser.add_argument('--search', help='Search for a string in filenames', metavar='STRING')
+    parser.add_argument('--search', help='Search for a string in filenames', metavar='STR')
     parser.add_argument('--create-folder', help='Ask for meta data and create a new folder', action='store_true')
     parser.add_argument('--adopt', help='Create a new letter based on a previous one', metavar='FILE')
     parser.add_argument('--edit', help='Edit the current letter or another source file', metavar='FILE', nargs='?', const='')
@@ -166,18 +190,15 @@ def main():
     parser.add_argument('--soap-simple-fax', help='Send a fax via simple-fax.de using the SOAP interface', metavar='DEST')
     parser.add_argument('--buy-stamp', help='Buy a stamp. Place postage file in current folder or use together with --adopt.', nargs='?', metavar='PRODUCT_ID', const='1')
 
-    parser.add_argument('--lookup-address', help='Search for an address via Google. Can be used together with --adopt.', metavar='STRING')    
+    parser.add_argument('--lookup-address', help='Search for an address via Google. Can be used together with --adopt.', metavar='STR')    
     parser.add_argument('--keep-folder', help='Store the adopted letter in the same folder', action='store_true')
     parser.add_argument('--config', help='The configuration file to use', default=config_file, metavar='FILE')   
     parser.add_argument('--verbose', help='Show what is going on', action='store_true')
     parser.add_argument('--configure', help='Initialize the environment and configure the tool', action='store_true')
     parser.add_argument('--version', help='Show version', action='store_true')
-    
-    (options, unknown_options) = parser.parse_known_args()
 
-    if unknown_options:
-        print("+ Unknown options: %s" % unknown_options)
-        parser.print_help()
+       
+    (options, unknown_options) = parser.parse_known_args()
         
     
     if options.configure:
@@ -264,12 +285,30 @@ def main():
             
 
     if options.adopt:
+
+        src_file = fensterbrief.expand_file_name(options.adopt, root_dir)
+        defaults = fensterbrief.import_defaults_from_markdown(src_file)
+        
+        add_yaml_keys_as_params(parser, defaults)
+
+        if options.help:
+            parser.print_help()
+            return
+        
         address = None
+        
         if options.lookup_address:
             address = fensterbrief.lookup_address(options.lookup_address, config)
 
-        dst_file_name = fensterbrief.adopt(root_dir, options.adopt, options.keep_folder, address)
+        
+        # Todo: update defaults according to command line paramters
+        print(defaults)
 
+        
+        # ........
+        
+        dst_file_name = fensterbrief.adopt(root_dir, src_file, options.keep_folder, address, defaults)
+        print("+ Destination file name is %s" % src_file)
             
         if dst_file_name:
             if options.buy_stamp:
@@ -355,7 +394,14 @@ def main():
         print("+ Going to send file: %s" % pdf_file)
         trans.send(pdf_file, dst, working_ref['pdf'])
 
+        
+    if unknown_options:
+        print("+ Unknown options: %s" % unknown_options)
+        parser.print_help()
 
+    if options.help:
+        parser.print_help()
+        
         
 if __name__ == "__main__":
     main()

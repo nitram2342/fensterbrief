@@ -217,14 +217,6 @@ def request_file(recipient_name, filetype="tex", defaults=None):
     return [filename, letter_subject_raw]
 
 
-#def request_file_and_folder(recipient_name, filetype="tex", defaults=None):
-#    recipient_name = request_recipient(defaults)
-#    foldername = request_folder(recipient_name, defaults)
-#    filename, subject = request_file(recipient_name, filetype, defaults)
- 
-#    return [foldername, filename]
-
-
 def create_folder(doc_root, foldername):
 
     dst_folder_path = os.path.join(doc_root, foldername)
@@ -249,28 +241,31 @@ def expand_file_name(path, doc_root):
     else:
         return path
 
-    
-def adopt(doc_root, src_file, keep_folder=False, address=None):
 
-    recipient_name = None
+def import_defaults_from_markdown(src_file):
 
-    defaults = None
-    
-    src_file = expand_file_name(src_file, doc_root)
+    return read_yaml_from_md(src_file)
+    #defaults = None
 
     # try to load some information from markdown file.
-    if is_markdown(src_file):
-        if defaults is None:
-            defaults = {}
-        yaml = read_yaml_from_md(src_file)
-        for yaml_key in ['recipient-shortname', 'subject']:
-            if yaml_key in yaml:                    
-                defaults[yaml_key] = yaml[yaml_key]
-            else: # should that be the default?
-                defaults[yaml_key] = ""
-            
-    recipient_name = request_recipient(defaults)
-        
+    #if is_markdown(src_file):
+    #    if defaults is None:
+    #        defaults = {}
+    #    yaml = read_yaml_from_md(src_file)
+        #for yaml_key in ['recipient-shortname', 'subject']:
+        #    if yaml_key in yaml:                    
+        #        defaults[yaml_key] = yaml[yaml_key]
+        #    else: # should that be the default?
+        #        defaults[yaml_key] = ""
+
+    #return defaults
+
+def adopt(doc_root, src_file, keep_folder=False, address=None, defaults=None):
+
+    # moved to main:
+    #src_file = expand_file_name(src_file, doc_root)
+    #defaults = import_defaults_from_markdown(src_file)
+    recipient_name = request_recipient(defaults)       
 
     if is_latex(src_file):
         new_filename, subject = request_file(recipient_name, 'tex', defaults)
@@ -294,8 +289,21 @@ def adopt(doc_root, src_file, keep_folder=False, address=None):
     if is_latex(dst_file_path):
         shutil.copyfile(src_file,  dst_file_path)
     else:
-        replace_data = { 'subject' : subject,
-                         'recipient-shortname' : recipient_name}
+        
+        # create 'replace_data' and initialize it with default
+        replace_data = defaults
+
+        # override 'replace_data' with potentially manually adjusted
+        # parameters 'subject' and 'recipient-shortname' that is
+        # either default or a manually assigned value.
+        
+        replace_data['subject'] = subject
+        replace_data['recipient-shortname'] = recipient_name
+
+        # Both keys were taken from 'defaults' with an option
+        # to manually override it. Here, all other keys from
+        # 'default' should be copied to replace_data
+        
         if address:
             replace_data['to'] = address
             
@@ -311,45 +319,62 @@ def adopt(doc_root, src_file, keep_folder=False, address=None):
 # Regexps taken from
 # https://github.com/waylan/Python-Markdown/blob/master/markdown/extensions/meta.py
 # that is also under a BSD licence
-    
-META_RE = re.compile(r'^[ ]{0,3}(?P<key>[\#A-Za-z0-9_-]+):\s*(?P<value>.*)\s*')
+
+YAML_HEADER_MARKER_RE = re.compile(r'^\-\-\-')
+META_RE = re.compile(r'^[ ]{0,3}(?P<key>[\#A-Za-z0-9\_\-]+):\s*(?P<value>.*)\s*')
 META_MORE_RE = re.compile(r'^[ ]{4,}(?P<value>.*)')
 END_RE = re.compile(r'^(-{3}|\.{3})(\s.*)?')
 
 def read_yaml_from_md(file):
 
+    in_yaml_header = False
+    after_yaml_header = False
+    
     key = None
     meta = {}
     
     with open(file) as fin:
         for line in fin.readlines():
-            m1 = META_RE.match(line)
-            m2 = META_MORE_RE.match(line)
+
+            if not in_yaml_header:
+                if not after_yaml_header:
+                    m0 = YAML_HEADER_MARKER_RE.match(line)
+                    if m0:
+                        in_yaml_header = True
+
+            else:
+                m0 = YAML_HEADER_MARKER_RE.match(line)
+                m1 = META_RE.match(line)
+                m2 = META_MORE_RE.match(line)
                     
-            if m1:
+                if m0:
+                    in_yaml_header = False
+                    after_yaml_header = True
 
-                key = m1.group('key').lower().strip()
-                value = m1.group('value').strip()
+                if m1:
 
-                if value != '|':
-                    if key in meta:
-                        meta[key].append(value)
-                    else:
-                        meta[key] = value
+                    key = m1.group('key').lower().strip()
+                    value = m1.group('value').strip()
 
-            elif m2:
+                    if value != '|':
+                        if key in meta:
+                            meta[key].append(value)
+                        else:
+                            meta[key] = value
 
-                if key:
-                    value = m2.group('value').strip()
+                elif m2:
+
+                    if key:
+                        value = m2.group('value').strip()
+                    
+                        if key in meta:
+                            meta[key].append(value)
+                        else:
+                            meta[key] = [value]                                
+
                             
-                    if key in meta:
-                        meta[key].append(value)
-                    else:
-                        meta[key] = [value]                                
-
-                            
-                elif END_RE.match(line) and key is not None:
-                    return meta
+                    elif END_RE.match(line) and key is not None:
+                        return meta
 
     return meta
         
