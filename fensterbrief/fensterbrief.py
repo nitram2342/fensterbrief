@@ -356,15 +356,16 @@ def read_yaml_from_md(file):
                     key = m1.group('key').lower().strip()
                     value = m1.group('value').strip()
 
-                    if value != '|':
-                        if key in meta:
-                            meta[key].append(value)
-                        else:
-                            meta[key] = value
+                    if not key.startswith("#"):
+                        if value != '|':
+                            if key in meta:
+                                meta[key].append(value)
+                            else:
+                                meta[key] = value
 
                 elif m2:
 
-                    if key:
+                    if key and not key.startswith("#"):
                         value = m2.group('value').strip()
                     
                         if key in meta:
