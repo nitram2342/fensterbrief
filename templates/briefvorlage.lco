@@ -1,13 +1,15 @@
 \ProvidesFile{sections.lco}%
              [2008/12/03 v0.2 unsupported LCO-file]%
-\RequirePackage{geometry}
-\geometry{top=47mm,right=20mm,bottom=27mm,left=20mm}
 
 \RequirePackage{tikzpagenodes}
 
 \RequirePackage{advdate}
+\RequirePackage{etoolbox}
+\RequirePackage{geometry}
 \RequirePackage{booktabs}
 \RequirePackage{longtable}
+\geometry{top=47mm,right=20mm,bottom=27mm,left=20mm}
+
 
 \KOMAoptions{enlargefirstpage=on}
 \KOMAoptions{parskip=half}
@@ -115,17 +117,23 @@
 \newkomavar{fromdistrict}
 \newkomavar{fromnameshort}
 \newkomavar{fromcountry}
+\newkomavar{fromorg}
+\newkomavar{fromcareof}
+\newkomavar{fromcareofshort}
 
 % Konfiguration:
-\setkomavar{fromname}{Erika Mustermann}
-\setkomavar{fromnameshort}{E. Mustermann}
-\setkomavar{fromstreet}{Milchstraße 42}
-\setkomavar{fromstreetshort}{Milchstr. 42}
-\setkomavar{fromdistrict}{42523 Somewhere}
+\setkomavar{fromname}{}
+\setkomavar{fromnameshort}{}
+\setkomavar{fromstreet}{}
+\setkomavar{fromstreetshort}{}
+\setkomavar{fromdistrict}{}
 \setkomavar{fromcountry}{}
-\setkomavar{fromphone}{+49 30 XXXX XXXX}
-\setkomavar{fromfax}{+49 30 XXXX XXXX}
-\setkomavar{fromemail}{\emaillink{test@example.com}}
+\setkomavar{fromorg}{}
+\setkomavar{fromcareof}{}
+\setkomavar{fromcareofshort}{}
+\setkomavar{fromphone}{}
+\setkomavar{fromfax}{}
+\setkomavar{fromemail}{}
 \setkomavar{signature}{\usekomavar{fromname}}
 
 \newkomavar{backaddresssize}
@@ -134,14 +142,17 @@
 \setkomavar{backaddressseparator}{ \textperiodcentered\  }
 \setkomavar{fromaddress}{\usekomavar{fromstreet}\usekomavar[\\]{fromdistrict}}
 \setkomavar{backaddress}{\usekomavar{backaddresssize}{
-	\usekomavar{fromnameshort}\usekomavar{backaddressseparator}
+	\ifkomavarempty{fromcareofshort}{ 
+		\ifkomavarempty{fromorg}{\usekomavar{fromnameshort}}{\usekomavar{fromorg}}
+	}{\usekomavar{fromnameshort} \usekomavar{backaddressseparator} c/o \usekomavar{fromcareofshort}
+	} \usekomavar{backaddressseparator}
 	\usekomavar{fromstreetshort}\usekomavar{backaddressseparator} 
 	\usekomavar{fromdistrict}
 	\ifkomavarempty{fromcountry}{}{
 		\usekomavar{backaddressseparator}\usekomavar{fromcountry}} \usekomavar{PPdatamatrix} }}
 
-
 \makeatletter
+
 
 \@setplength{foldmarkhpos}{8mm} %falzmarken verlaengern
 \@addtoplength{toaddrhpos}{0cm} % addressfenster nach rechts
@@ -154,13 +165,17 @@
 \setkomavar{location}{
 \raggedleft
 \begin{tabular}[t]{@{}rr@{}}
-\Letter	  & \usekomavar{fromname} \\
+\Ifkomavarempty{fromcareof}{
+	\Letter & \Ifkomavarempty{fromorg}{ \usekomavar{fromname} }{ \usekomavar{fromorg} } \\
+}{\Letter & \usekomavar{fromname} \\
+	  & c/o \usekomavar{fromcareof} \\
+}
 	  & \usekomavar{fromstreet} \\
-  	  & \usekomavar{fromdistrict} \\ 
+  	  & \usekomavar{fromdistrict} \\
 	  & \\
-\Telefon  & \usekomavar{fromphone} \\
-\Fax 	  & \usekomavar{fromfax} \\
-\MVAt 	  & \usekomavar{fromemail} 
+\Ifkomavarempty{fromphone}{}{\Telefon  & \usekomavar{fromphone} \\}
+\Ifkomavarempty{fromfax}{}{\Fax 	  & \usekomavar{fromfax} \\}
+\Ifkomavarempty{fromemail}{}{\MVAt 	  & \usekomavar{fromemail} \\ }
 \end{tabular}
 }
 
@@ -252,6 +267,7 @@
 \setkomafont{backaddress}{\rmfamily}
 
 \renewcommand*{\raggedsignature}{\raggedright} 
+
 
 
 \endinput

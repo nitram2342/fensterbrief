@@ -8,14 +8,18 @@
 #fromphone: +49 30 XXXX XXXX
 #fromfax: +49 30 XXXX XXXX
 #fromemail: test@example.com
+#fromcareof:
+#fromcareofshort:
+#fromorg:
+#fromcountry: Germany
 #signature: ../signature.pdf
 #postage: stamp-2342.pdf
 subject: Lorem Ipsum
 opening: Sehr geehrte Frau Mustermann,
 closing: Mit freundlichen Grüßen
-my_ref: RG2342
-your_ref: 42
-customer: 1000
+#my_ref: RG2342
+#your_ref: 42
+#customer: 1000
 #to: Use four spaces before and two spaces after in each line of the 'to' field
 to: |
     Erika Mustermann  

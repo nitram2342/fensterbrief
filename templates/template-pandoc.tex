@@ -6,13 +6,18 @@
    draft=false%%             Entwurfsmodus!
 ]{scrlttr2}
 
+
 % \tightlist used by pandoc
 \providecommand{\tightlist}{%
     \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
+
 % Bei Briefen in das Ausland
 
 $if(fromcountry)$\setkomavar{fromcountry}{$fromcountry$}$endif$
+$if(fromorg)$\setkomavar{fromorg}{$fromorg$}$endif$
+$if(fromcareof)$\setkomavar{fromcareof}{$fromcareof$}$endif$
+$if(fromcareofshort)$\setkomavar{fromcareofshort}{$fromcareofshort$}$endif$
 $if(fromname)$\setkomavar{fromname}{$fromname$}$endif$
 $if(fromnameshort)$\setkomavar{fromnameshort}{$fromnameshort$}$endif$
 $if(fromstreet)$\setkomavar{fromstreet}{$fromstreet$}$endif$
@@ -26,9 +31,10 @@ $if(fromemail)$\setkomavar{fromemail}{\emaillink{$fromemail$}}$endif$
 % Falls eine Unterschrift genutzt werden soll
 $if(signature)$
 \setkomavar{signature}{\\[-3\baselineskip]
-\includegraphics[scale=.5]{$signature$}\\
+\includegraphics[scale=.3]{$signature$}\\
 $fromname$}
 $endif$
+
 
 $if(postage)$
 \setkomavar{PPdatamatrix}{
@@ -42,6 +48,7 @@ $endif$
  \begin{letter}{
      $to$
  }  
+
 
 \setkomavar{subject}{$subject$}
 
